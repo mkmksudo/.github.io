@@ -4,271 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>カスタムタイマー</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f4f7f6;
-            color: #333;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-align: center;
-        }
-
-        /* 全リセットボタンのスタイル */
-        .all-reset-container {
-            margin-bottom: 40px;
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .all-reset-button {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 15px 35px;
-            font-size: 1.3em;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .all-reset-button:hover {
-            background-color: #c0392b;
-            transform: translateY(-2px);
-        }
-
-        .all-reset-button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        /* --- タイマーセクション共通スタイル --- */
-        .timer-section {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            padding: 20px 30px;
-            margin-bottom: 25px;
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-            box-sizing: border-box;
-        }
-
-        .timer-section h2 {
-            color: #34495e;
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 10px;
-        }
-
-        .timer-info {
-            display: none;
-        }
-
-        /* ボタン共通スタイル */
-        .timer-controls button {
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 25px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            margin: 8px;
-            min-width: 100px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .timer-controls button:hover {
-            background-color: #27ae60;
-            transform: translateY(-2px);
-        }
-
-        .timer-controls button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .timer-controls button.reset {
-            background-color: #008CBA;
-        }
-
-        .timer-controls button.reset:hover {
-            background-color: #007bb5;
-        }
-
-        /* 機能2, 3のステータスと次の音表示を格納するコンテナ */
-        .status-display-container {
-            min-height: 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-top: 15px;
-        }
-
-        .current-status {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #3498db;
-            margin: 0;
-        }
-
-        .next-beep-time {
-            font-size: 2.2em;
-            font-weight: bold;
-            color: #7f8c8d;
-            margin-top: 5px;
-            min-height: auto;
-        }
-        .next-beep-time:empty {
-            display: none;
-        }
-
-        /* --- 機能1の個別タイマーのレイアウト --- */
-        .feature1-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .feature1-item:last-child {
-            border-bottom: none;
-        }
-
-        .feature1-item h3 {
-            margin: 0;
-            font-size: 1.2em;
-            color: #333;
-            flex-grow: 1;
-            text-align: left;
-        }
-
-        .feature1-item .timer-controls {
-            flex-shrink: 0;
-            margin-right: 15px;
-        }
-
-        .feature1-item .timer-controls button {
-            padding: 8px 18px;
-            font-size: 1em;
-            margin: 0;
-            min-width: 80px;
-        }
-
-        .feature1-item .current-status-group {
-            flex-shrink: 0;
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            min-width: 90px;
-        }
-
-        .feature1-item .current-status {
-            margin: 0;
-            font-size: 1em;
-            min-height: auto;
-        }
-
-        /* 機能1の時間を大きくする */
-        .feature1-item .next-beep-time {
-            margin: 0;
-            font-size: 1.8em; /* 以前の1.2emから変更 */
-            min-height: auto;
-            font-weight: bold;
-        }
-
-        .feature1-outer-section {
-            max-width: 500px;
-            margin-bottom: 25px;
-        }
-
-        .feature1-outer-section h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 10px;
-        }
-
-        /* --- レスポンシブ調整 --- */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2em;
-            }
-            .all-reset-button {
-                padding: 12px 25px;
-                font-size: 1.1em;
-            }
-            .timer-section {
-                padding: 15px 20px;
-                margin-bottom: 20px;
-            }
-            .timer-section h2 {
-                font-size: 1.5em;
-                margin-bottom: 15px;
-            }
-            .timer-controls button {
-                padding: 10px 20px;
-                font-size: 1em;
-                margin: 5px;
-            }
-
-            /* 機能1のスマホ時のレイアウト調整 */
-            .feature1-item {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .feature1-item h3 {
-                flex-grow: 1;
-                margin-bottom: 0;
-                text-align: left;
-            }
-            .feature1-item .timer-controls {
-                margin-right: 10px;
-                margin-bottom: 0;
-            }
-            .feature1-item .current-status-group {
-                width: auto;
-                align-items: flex-end;
-            }
-            .feature1-item .current-status {
-                font-size: 0.9em; /* スマホでの機能1のステータス文字サイズを少し小さく */
-            }
-            .feature1-item .next-beep-time {
-                font-size: 1.5em; /* スマホでの機能1の時間を調整 */
-            }
-            .next-beep-time { /* 機能2,3のスマホ時の文字サイズ */
-                font-size: 1.8em;
-            }
-            .status-display-container {
-                min-height: 70px;
-            }
-        }
-    </style>
-</head>
+    <link rel="stylesheet" href="style.css"> </head>
 <body>
     <h1>カスタムタイマー</h1>
 
@@ -358,6 +94,7 @@
 
         const ALL_TIMER_IDS = [1, 2, 3, 4, 6, 7];
 
+        // 警告音を調整 (周波数を高く、短く)
         function playBeep() {
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -365,14 +102,14 @@
                 const gainNode = audioContext.createGain();
 
                 oscillator.type = 'sine'; // 正弦波
-                oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // 440Hz (A4の音)
+                oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // 周波数を880Hz (A5の音) に変更
                 gainNode.gain.setValueAtTime(0.5, audioContext.currentTime); // 音量
 
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
 
                 oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.1); // 0.1秒再生
+                oscillator.stop(audioContext.currentTime + 0.08); // 0.08秒再生に短縮
             } catch (e) {
                 console.error("音声の再生に失敗しました:", e);
             }
@@ -444,9 +181,6 @@
                     targetBeepTime = initial110Beep;
                 } else {
                     // 110秒の音が鳴った後、またはタイマー開始直後からサイクル音を表示する場合
-                    // allFutureBeepsの中から、サイクル内の主要な次の音を表示
-                    // 機能2は15秒ごとの音、機能3は12.6秒ごとの音を主要なものとする
-                    // (allFutureBeeps は常にソートされているため、現在の先頭が10秒/7.6秒、2番目が15秒/12.6秒の音)
                     if (allFutureBeeps.length >= 2) {
                         targetBeepTime = allFutureBeeps[1]; // サイクル内の2番目の音（主要な音）
                     } else if (allFutureBeeps.length === 1) {
@@ -467,9 +201,9 @@
 
                 if (remainingMs <= 0) {
                     displayTime = '00:00';
-                    element.style.color = '#3498db';
+                    element.style.color = '#000000'; // 黒字に戻す
                 } else {
-                    element.style.color = '#7f8c8d';
+                    element.style.color = '#000000'; // 黒字に変更
                 }
             } else {
                 displayTime = '';
