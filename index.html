@@ -10,7 +10,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             min-height: 100vh;
             margin: 0;
             background-color: #f4f7f6;
@@ -26,16 +26,47 @@
             text-align: center;
         }
 
+        /* 全リセットボタンのスタイル */
+        .all-reset-container {
+            margin-bottom: 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .all-reset-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 35px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .all-reset-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .all-reset-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
         /* --- タイマーセクション共通スタイル --- */
         .timer-section {
             background-color: #ffffff;
             border-radius: 12px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-bottom: 40px;
+            padding: 20px 30px;
+            margin-bottom: 25px;
             width: 100%;
-            max-width: 500px; /* 通常のセクションの最大幅 */
+            max-width: 500px;
             text-align: center;
+            box-sizing: border-box;
         }
 
         .timer-section h2 {
@@ -48,23 +79,21 @@
         }
 
         .timer-info {
-            font-size: 1.1em;
-            margin-bottom: 25px;
-            line-height: 1.6;
-            color: #555;
+            display: none;
         }
 
+        /* ボタン共通スタイル */
         .timer-controls button {
-            background-color: #2ecc71; /* Green for start */
+            background-color: #2ecc71;
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 15px 30px;
-            font-size: 1.4em;
+            padding: 12px 25px;
+            font-size: 1.2em;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            margin: 10px;
-            min-width: 120px;
+            margin: 8px;
+            min-width: 100px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
@@ -79,90 +108,154 @@
         }
 
         .timer-controls button.reset {
-            background-color: #008CBA; /* Blue for reset */
+            background-color: #008CBA;
         }
 
         .timer-controls button.reset:hover {
             background-color: #007bb5;
         }
 
+        /* 機能2, 3のステータスと次の音表示を格納するコンテナ */
+        .status-display-container {
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px; /* ボタンとの間隔を調整 */
+        }
+
         .current-status {
-            margin-top: 20px;
             font-size: 1.2em;
             font-weight: bold;
             color: #3498db;
-            min-height: 1.5em; /* Layout stability */
+            margin: 0;
         }
 
         .next-beep-time {
-            margin-top: 15px;
-            font-size: 1.1em;
-            color: #7f8c8d; /* Grayish blue */
-            min-height: 1.3em;
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #7f8c8d;
+            margin-top: 5px;
+            min-height: auto;
+        }
+        .next-beep-time:empty {
+            display: none;
         }
 
-        /* --- 機能1の複数タイマー用コンテナ --- */
-        .feature1-container {
+        /* --- 機能1の個別タイマーのレイアウト --- */
+        .feature1-item {
             display: flex;
-            flex-wrap: wrap; /* 画面幅が狭い場合に折り返す */
-            justify-content: center;
-            gap: 20px; /* タイマー間のスペース */
-            margin-bottom: 40px;
-            width: 100%;
-            max-width: 1100px; /* 複数のタイマーを横並びにするための最大幅 */
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
         }
 
-        /* 機能1個別のタイマーセクションのスタイル */
-        .feature1-container .timer-section {
-            flex: 1 1 calc(33.333% - 20px); /* 3列表示の基本 */
-            min-width: 280px; /* 狭い画面での最小幅 */
-            margin-bottom: 0; /* 親コンテナで管理 */
-            padding: 20px; /* 少し小さめに */
+        .feature1-item:last-child {
+            border-bottom: none;
         }
 
-        .feature1-container .timer-section h2 {
-            font-size: 1.4em; /* 小さめのタイトル */
-            margin-bottom: 10px;
-            border-bottom: none; /* 下線を削除 */
-            padding-bottom: 0;
+        .feature1-item h3 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #333;
+            flex-grow: 1;
+            text-align: left;
         }
 
-        .feature1-container .timer-section .timer-info {
-            display: none; /* 個別の説明は非表示 */
+        .feature1-item .timer-controls {
+            flex-shrink: 0;
+            margin-right: 15px;
         }
 
-        .feature1-container .timer-section .timer-controls button {
-            padding: 10px 20px;
-            font-size: 1.1em;
-            margin: 5px;
-            min-width: 100px;
+        .feature1-item .timer-controls button {
+            padding: 8px 18px;
+            font-size: 1em;
+            margin: 0;
+            min-width: 80px;
+        }
+
+        .feature1-item .current-status-group {
+            flex-shrink: 0;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            min-width: 90px;
+        }
+
+        .feature1-item .current-status {
+            margin: 0;
+            font-size: 1em;
+            min-height: auto;
+        }
+
+        .feature1-item .next-beep-time {
+            margin: 0;
+            font-size: 1.2em;
+            min-height: auto;
+            font-weight: bold;
+        }
+
+        .feature1-outer-section {
+            max-width: 500px;
+            margin-bottom: 25px;
+        }
+
+        .feature1-outer-section h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
         }
 
         /* --- レスポンシブ調整 --- */
-        @media (max-width: 1000px) {
-            .feature1-container .timer-section {
-                flex: 1 1 calc(50% - 20px); /* 2列表示 */
-            }
-        }
-
         @media (max-width: 600px) {
             h1 {
                 font-size: 2em;
             }
+            .all-reset-button {
+                padding: 12px 25px;
+                font-size: 1.1em;
+            }
             .timer-section {
-                padding: 20px;
+                padding: 15px 20px;
+                margin-bottom: 20px;
             }
             .timer-section h2 {
                 font-size: 1.5em;
+                margin-bottom: 15px;
             }
             .timer-controls button {
-                padding: 12px 25px;
-                font-size: 1.2em;
-                margin: 8px;
+                padding: 10px 20px;
+                font-size: 1em;
+                margin: 5px;
             }
-            /* スマホでは1列表示 */
-            .feature1-container .timer-section {
-                flex: 1 1 100%; /* 1列表示 */
+            .feature1-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .feature1-item h3 {
+                margin-bottom: 5px;
+            }
+            .feature1-item .timer-controls {
+                margin-right: 0;
+                margin-bottom: 5px;
+            }
+            .feature1-item .current-status-group {
+                width: 100%;
+                align-items: flex-start;
+            }
+            .next-beep-time {
+                font-size: 1.8em;
+            }
+            .feature1-item .next-beep-time {
+                font-size: 1em;
+            }
+            .status-display-container {
+                min-height: 70px;
             }
         }
     </style>
@@ -170,87 +263,91 @@
 <body>
     <h1>カスタムタイマー</h1>
 
-    <div class="timer-section">
-        <h2>機能1: 固定2回</h2>
-        <p class="timer-info">ボタンを押してから **105秒後** と **110秒後** に音が鳴ります。</p>
+    <div class="all-reset-container">
+        <button class="all-reset-button" onclick="resetAllTimers()">全タイマーをリセット</button>
     </div>
 
-    <div class="feature1-container">
-        <div class="timer-section" id="timerSection1">
-            <h2>タイマー 1-1</h2>
+    <div class="timer-section feature1-outer-section">
+        <h2>機能1: 固定2回</h2>
+
+        <div class="feature1-item" id="timerSection1">
+            <h3>タイマー 1-1</h3>
             <div class="timer-controls">
                 <button onclick="startTimer1(1)">スタート</button>
-                <button class="reset" onclick="resetTimer(1)">リセット</button>
             </div>
-            <div class="current-status" id="status1"></div>
-            <div class="next-beep-time" id="nextBeep1"></div>
+            <div class="current-status-group">
+                <div class="current-status" id="status1"></div>
+                <div class="next-beep-time" id="nextBeep1"></div>
+            </div>
         </div>
 
-        <div class="timer-section" id="timerSection2">
-            <h2>タイマー 1-2</h2>
+        <div class="feature1-item" id="timerSection2">
+            <h3>タイマー 1-2</h3>
             <div class="timer-controls">
                 <button onclick="startTimer1(2)">スタート</button>
-                <button class="reset" onclick="resetTimer(2)">リセット</button>
             </div>
-            <div class="current-status" id="status2"></div>
-            <div class="next-beep-time" id="nextBeep2"></div>
+            <div class="current-status-group">
+                <div class="current-status" id="status2"></div>
+                <div class="next-beep-time" id="nextBeep2"></div>
+            </div>
         </div>
 
-        <div class="timer-section" id="timerSection3">
-            <h2>タイマー 1-3</h2>
+        <div class="feature1-item" id="timerSection3">
+            <h3>タイマー 1-3</h3>
             <div class="timer-controls">
                 <button onclick="startTimer1(3)">スタート</button>
-                <button class="reset" onclick="resetTimer(3)">リセット</button>
             </div>
-            <div class="current-status" id="status3"></div>
-            <div class="next-beep-time" id="nextBeep3"></div>
+            <div class="current-status-group">
+                <div class="current-status" id="status3"></div>
+                <div class="next-beep-time" id="nextBeep3"></div>
+            </div>
         </div>
 
-        <div class="timer-section" id="timerSection4">
-            <h2>タイマー 1-4</h2>
+        <div class="feature1-item" id="timerSection4">
+            <h3>タイマー 1-4</h3>
             <div class="timer-controls">
                 <button onclick="startTimer1(4)">スタート</button>
-                <button class="reset" onclick="resetTimer(4)">リセット</button>
             </div>
-            <div class="current-status" id="status4"></div>
-            <div class="next-beep-time" id="nextBeep4"></div>
+            <div class="current-status-group">
+                <div class="current-status" id="status4"></div>
+                <div class="next-beep-time" id="nextBeep4"></div>
+            </div>
         </div>
-    </div> ---
-
-    <div class="timer-section" id="timerSection6">
+    </div> <div class="timer-section" id="timerSection6">
         <h2>機能2: 繰り返し（10秒/15秒）</h2>
-        <p class="timer-info">ボタンを押してから **105秒後** と **110秒後** に音が鳴ります。<br>その後、**10秒後** と **15秒後** に音が鳴るサイクルを繰り返します。</p>
+        <div class="status-display-container">
+            <div class="current-status" id="status6"></div>
+            <div class="next-beep-time" id="nextBeep6"></div>
+        </div>
         <div class="timer-controls">
             <button onclick="startTimer2(6)">スタート</button>
             <button class="reset" onclick="resetTimer(6)">リセット</button>
         </div>
-        <div class="current-status" id="status6"></div>
-        <div class="next-beep-time" id="nextBeep6"></div>
     </div>
 
     <div class="timer-section" id="timerSection7">
         <h2>機能3: 繰り返し（7.6秒/12.6秒）</h2>
-        <p class="timer-info">ボタンを押してから **105秒後** と **110秒後** に音が鳴ります。<br>その後、**7.6秒後** と **12.6秒後** に音が鳴るサイクルを繰り返します。</p>
+        <div class="status-display-container">
+            <div class="current-status" id="status7"></div>
+            <div class="next-beep-time" id="nextBeep7"></div>
+        </div>
         <div class="timer-controls">
             <button onclick="startTimer3(7)">スタート</button>
             <button class="reset" onclick="resetTimer(7)">リセット</button>
         </div>
-        <div class="current-status" id="status7"></div>
-        <div class="next-beep-time" id="nextBeep7"></div>
     </div>
 
     <script>
-        // 各タイマーの状態を管理するオブジェクト
-        // 機能1はID 1～4、機能2はID 6、機能3はID 7とする
         const timers = {
             1: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
             2: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
             3: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
             4: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
-            // タイマー1-5を削除したため、5の行は不要になります
             6: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
             7: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null }
         };
+
+        const ALL_TIMER_IDS = [1, 2, 3, 4, 6, 7];
 
         function playBeep() {
             try {
@@ -289,8 +386,17 @@
             timer.updateInterval = null;
 
             updateStatus(timer.statusElement, '待機中', '#7f8c8d');
-            updateNextBeepTime(timer.nextBeepElement, '');
+            updateNextBeepTime(timer.nextBeepElement, '', timerId); // timerIdを渡す
             console.log(`機能${timerId}のタイマーがリセットされました。`);
+        }
+
+        function resetAllTimers() {
+            if (confirm('すべてのタイマーをリセットしてもよろしいですか？')) {
+                ALL_TIMER_IDS.forEach(id => {
+                    resetTimer(id);
+                });
+                console.log('すべてのタイマーがリセットされました。');
+            }
         }
 
         function updateStatus(statusElement, message, color = '#3498db') {
@@ -300,7 +406,7 @@
             }
         }
 
-        function updateNextBeepTime(element, nextBeepTimestamp) {
+        function updateNextBeepTime(element, nextBeepTimestamp, timerId) {
             if (!element) return;
 
             if (nextBeepTimestamp === '') {
@@ -309,17 +415,63 @@
             }
 
             const now = Date.now();
-            const remainingMs = nextBeepTimestamp - now;
+            let displayTime = ''; // 表示する時間
+            let nextRelevantBeep = null; // 次に表示すべき最も近い音
 
-            if (remainingMs <= 0) {
-                element.textContent = '次の音: すぐ';
-            } else {
-                const remainingSec = Math.ceil(remainingMs / 1000);
-                element.textContent = `次の音まで: ${remainingSec}秒`;
+            // timer.nextBeepTimes は常にソートされている前提
+            const allRemainingBeeps = timers[timerId].nextBeepTimes.filter(t => t > now);
+
+            if (timerId >= 1 && timerId <= 4) { // 機能1の場合
+                // 110秒後の音だけを表示
+                const beep110Time = allRemainingBeeps.find(t => {
+                    const elapsed = t - timers[timerId].startTime;
+                    return Math.abs(elapsed - (110 * 1000)) < 500; // 誤差を許容
+                });
+                nextRelevantBeep = beep110Time;
+            } else if (timerId === 6 || timerId === 7) { // 機能2, 3の場合
+                // 最初の110秒後の音、またはサイクル内の次の音を表示
+                if (allRemainingBeeps.length > 0) {
+                    // 最も近い音
+                    const firstBeep = allRemainingBeeps[0];
+                    // その次にくる、サイクル内の「主要な」音 (例: 機能2なら15秒ごと)
+                    const secondBeep = allRemainingBeeps[1];
+
+                    // 110秒の音がまだ来ていない場合、それが主要
+                    if (timers[timerId].startTime && firstBeep && (firstBeep - timers[timerId].startTime < 110 * 1000 + 1000)) { // 110秒までまだ時間がある
+                         nextRelevantBeep = firstBeep;
+                    } else if (secondBeep) { // 既に110秒が過ぎているか、より近い次のサイクル音がある場合
+                         nextRelevantBeep = secondBeep;
+                    } else if (firstBeep) { // 残り一つしかない場合 (例: サイクル内の最後の音)
+                         nextRelevantBeep = firstBeep;
+                    }
+                }
             }
+
+            if (nextRelevantBeep) {
+                const remainingMs = nextRelevantBeep - now;
+                const totalSeconds = Math.ceil(remainingMs / 1000);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+
+                const formattedMinutes = String(minutes).padStart(2, '0');
+                const formattedSeconds = String(seconds).padStart(2, '0');
+                displayTime = `${formattedMinutes}:${formattedSeconds}`;
+
+                if (remainingMs <= 0) {
+                    displayTime = '00:00';
+                    element.style.color = '#3498db'; // 色を青に戻す
+                } else {
+                    element.style.color = '#7f8c8d'; // 通常のグレーの色
+                }
+            } else {
+                displayTime = ''; // 表示すべき音がない場合は空
+            }
+            element.textContent = displayTime;
         }
 
-        // --- 機能1 (共通ロジック): 固定2回 ---
+        // startTimer 関数の修正は、nextBeepTimes の管理方法と、updateNextBeepTime の呼び出し方です。
+        // updateNextBeepTime に timerId を渡すように変更します。
+
         function startTimer1(timerId) {
             const timer = timers[timerId];
             timer.statusElement = document.getElementById(`status${timerId}`);
@@ -330,21 +482,26 @@
 
             timer.startTime = Date.now();
             updateStatus(timer.statusElement, 'タイマーを開始しました。');
+            setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
 
-            const beep1Time = timer.startTime + (105 * 1000);
-            const beep2Time = timer.startTime + (110 * 1000);
-            timer.nextBeepTimes = [beep1Time, beep2Time].sort((a, b) => a - b);
+            const beep105Time = timer.startTime + (105 * 1000);
+            const beep110Time = timer.startTime + (110 * 1000);
+            // nextBeepTimesには全ての音の時刻を登録するが、表示は110秒のみに制御
+            timer.nextBeepTimes = [beep105Time, beep110Time].sort((a, b) => a - b);
 
             const timeout1 = setTimeout(() => {
                 playBeep();
                 updateStatus(timer.statusElement, '105秒経過！');
+                setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                 console.log(`機能${timerId}: 105秒後に音が鳴りました。`);
+                // 鳴った音はリストから削除
                 timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
             }, 105 * 1000);
 
             const timeout2 = setTimeout(() => {
                 playBeep();
                 updateStatus(timer.statusElement, '110秒経過！完了。', '#2ecc71');
+                setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                 console.log(`機能${timerId}: 110秒後に音が鳴りました。`);
                 timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
                 if (timer.updateInterval) {
@@ -356,13 +513,9 @@
             timer.timeouts.push(timeout1, timeout2);
 
             timer.updateInterval = setInterval(() => {
-                const nextBeep = timer.nextBeepTimes[0];
-                updateNextBeepTime(timer.nextBeepElement, nextBeep || '');
-                if (timer.nextBeepTimes.length === 0 && timer.timeouts.every(t => !t)) {
-                    clearInterval(timer.updateInterval);
-                    timer.updateInterval = null;
-                    updateNextBeepTime(timer.nextBeepElement, '');
-                }
+                // 次の音のタイムスタンプを渡す (updateNextBeepTime関数内で表示制御)
+                const nextBeep = timer.nextBeepTimes.length > 0 ? timer.nextBeepTimes[0] : '';
+                updateNextBeepTime(timer.nextBeepElement, nextBeep, timerId);
             }, 1000);
         }
 
@@ -376,22 +529,24 @@
 
             timer.startTime = Date.now();
             updateStatus(timer.statusElement, 'タイマーを開始しました。');
+            setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
 
-            const initialBeep1Time = timer.startTime + (105 * 1000);
-            const initialBeep2Time = timer.startTime + (110 * 1000);
-            timer.nextBeepTimes = [initialBeep1Time, initialBeep2Time].sort((a, b) => a - b);
+            const initialBeep105Time = timer.startTime + (105 * 1000);
+            const initialBeep110Time = timer.startTime + (110 * 1000);
+            timer.nextBeepTimes = [initialBeep105Time, initialBeep110Time].sort((a, b) => a - b);
 
             const playCycleBeeps = () => {
-                const currentCycleStartTime = Date.now();
-                const cycleBeep1Time = currentCycleStartTime + (10 * 1000);
-                const cycleBeep2Time = currentCycleStartTime + (15 * 1000);
+                const currentCycleBaseTime = Date.now(); // サイクル開始時刻ではなく、現在の時刻を基準にする
+                const cycleBeep10Time = currentCycleBaseTime + (10 * 1000);
+                const cycleBeep15Time = currentCycleBaseTime + (15 * 1000);
 
-                timer.nextBeepTimes.push(cycleBeep1Time, cycleBeep2Time);
-                timer.nextBeepTimes.sort((a, b) => a - b);
+                timer.nextBeepTimes.push(cycleBeep10Time, cycleBeep15Time);
+                timer.nextBeepTimes.sort((a, b) => a - b); // ソートして最も近い音が先頭に来るように
 
                 const cycleTimeout1 = setTimeout(() => {
                     playBeep();
                     updateStatus(timer.statusElement, `音1鳴動 (サイクル開始から10秒)`, '#f39c12');
+                    setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                     console.log(`機能${timerId}: サイクルから10秒後に音が鳴りました。`);
                     timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
                 }, 10 * 1000);
@@ -399,6 +554,7 @@
                 const cycleTimeout2 = setTimeout(() => {
                     playBeep();
                     updateStatus(timer.statusElement, `音2鳴動 (サイクル開始から15秒)`, '#f39c12');
+                    setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                     console.log(`機能${timerId}: サイクルから15秒後に音が鳴りました。`);
                     timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
                 }, 15 * 1000);
@@ -408,6 +564,7 @@
             const initialTimeout1 = setTimeout(() => {
                 playBeep();
                 updateStatus(timer.statusElement, '105秒経過！', '#3498db');
+                setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                 console.log(`機能${timerId}: 105秒後に音が鳴りました。`);
                 timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
             }, 105 * 1000);
@@ -415,14 +572,15 @@
             const initialTimeout2 = setTimeout(() => {
                 playBeep();
                 updateStatus(timer.statusElement, '110秒経過！繰り返し開始。', '#3498db');
+                setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                 console.log(`機能${timerId}: 110秒後に音が鳴りました。初回完了。`);
                 timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
 
-                playCycleBeeps();
+                playCycleBeeps(); // 初回繰り返しサイクル開始
 
                 const intervalId = setInterval(() => {
                     playCycleBeeps();
-                }, 15 * 1000);
+                }, 15 * 1000); // 15秒ごとにサイクルを繰り返す
                 timer.intervals.push(intervalId);
 
             }, 110 * 1000);
@@ -430,8 +588,8 @@
             timer.timeouts.push(initialTimeout1, initialTimeout2);
 
             timer.updateInterval = setInterval(() => {
-                const nextBeep = timer.nextBeepTimes[0];
-                updateNextBeepTime(timer.nextBeepElement, nextBeep || '');
+                const nextBeep = timer.nextBeepTimes.length > 0 ? timer.nextBeepTimes[0] : '';
+                updateNextBeepTime(timer.nextBeepElement, nextBeep, timerId);
             }, 1000);
         }
 
@@ -445,22 +603,24 @@
 
             timer.startTime = Date.now();
             updateStatus(timer.statusElement, 'タイマーを開始しました。');
+            setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
 
-            const initialBeep1Time = timer.startTime + (105 * 1000);
-            const initialBeep2Time = timer.startTime + (110 * 1000);
-            timer.nextBeepTimes = [initialBeep1Time, initialBeep2Time].sort((a, b) => a - b);
+            const initialBeep105Time = timer.startTime + (105 * 1000);
+            const initialBeep110Time = timer.startTime + (110 * 1000);
+            timer.nextBeepTimes = [initialBeep105Time, initialBeep110Time].sort((a, b) => a - b);
 
             const playCycleBeeps = () => {
-                const currentCycleStartTime = Date.now();
-                const cycleBeep1Time = currentCycleStartTime + (7.6 * 1000);
-                const cycleBeep2Time = currentCycleStartTime + (12.6 * 1000);
+                const currentCycleBaseTime = Date.now();
+                const cycleBeep7_6Time = currentCycleBaseTime + (7.6 * 1000);
+                const cycleBeep12_6Time = currentCycleBaseTime + (12.6 * 1000);
 
-                timer.nextBeepTimes.push(cycleBeep1Time, cycleBeep2Time);
+                timer.nextBeepTimes.push(cycleBeep7_6Time, cycleBeep12_6Time);
                 timer.nextBeepTimes.sort((a, b) => a - b);
 
                 const cycleTimeout1 = setTimeout(() => {
                     playBeep();
                     updateStatus(timer.statusElement, `音1鳴動 (サイクル開始から7.6秒)`, '#f39c12');
+                    setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                     console.log(`機能${timerId}: サイクルから7.6秒後に音が鳴りました。`);
                     timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
                 }, 7.6 * 1000);
@@ -468,6 +628,7 @@
                 const cycleTimeout2 = setTimeout(() => {
                     playBeep();
                     updateStatus(timer.statusElement, `音2鳴動 (サイクル開始から12.6秒)`, '#f39c12');
+                    setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                     console.log(`機能${timerId}: サイクルから12.6秒後に音が鳴りました。`);
                     timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
                 }, 12.6 * 1000);
@@ -477,6 +638,7 @@
             const initialTimeout1 = setTimeout(() => {
                 playBeep();
                 updateStatus(timer.statusElement, '105秒経過！', '#3498db');
+                setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                 console.log(`機能${timerId}: 105秒後に音が鳴りました。`);
                 timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
             }, 105 * 1000);
@@ -484,6 +646,7 @@
             const initialTimeout2 = setTimeout(() => {
                 playBeep();
                 updateStatus(timer.statusElement, '110秒経過！繰り返し開始。', '#3498db');
+                setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                 console.log(`機能${timerId}: 110秒後に音が鳴りました。初回完了。`);
                 timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
 
@@ -499,20 +662,24 @@
             timer.timeouts.push(initialTimeout1, initialTimeout2);
 
             timer.updateInterval = setInterval(() => {
-                const nextBeep = timer.nextBeepTimes[0];
-                updateNextBeepTime(timer.nextBeepElement, nextBeep || '');
+                const nextBeep = timer.nextBeepTimes.length > 0 ? timer.nextBeepTimes[0] : '';
+                updateNextBeepTime(timer.nextBeepElement, nextBeep, timerId);
             }, 1000);
         }
 
         // ページロード時に全てのタイマーの表示を初期化
         document.addEventListener('DOMContentLoaded', () => {
-            // ID 1から4 (機能1) と ID 6, 7 (機能2, 3) を初期化
-            const timerIdsToInit = [1, 2, 3, 4, 6, 7];
-            timerIdsToInit.forEach(i => {
+            ALL_TIMER_IDS.forEach(i => {
                 const section = document.getElementById(`timerSection${i}`);
                 if (section) {
-                    timers[i].statusElement = section.querySelector('.current-status');
-                    timers[i].nextBeepElement = section.querySelector('.next-beep-time');
+                    if (i >= 1 && i <= 4) {
+                        timers[i].statusElement = section.querySelector('.current-status');
+                        timers[i].nextBeepElement = section.querySelector('.next-beep-time');
+                    } else {
+                        const displayContainer = section.querySelector('.status-display-container');
+                        timers[i].statusElement = displayContainer.querySelector('.current-status');
+                        timers[i].nextBeepElement = displayContainer.querySelector('.next-beep-time');
+                    }
                     timers[i].sectionElement = section;
                     resetTimer(i);
                 }
