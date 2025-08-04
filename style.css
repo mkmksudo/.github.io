@@ -76,17 +76,24 @@ h1 {
 }
 
 /* ボタン共通スタイル */
+.timer-controls {
+    display: flex; /* ボタンを横並びにする */
+    flex-wrap: wrap; /* ボタンが多すぎたら改行 */
+    justify-content: center; /* 中央寄せ */
+    margin-top: 15px;
+}
+
 .timer-controls button {
     background-color: #2ecc71;
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 10px 20px; /* 少し小さく */
-    font-size: 1.1em; /* 少し小さく */
+    padding: 10px 20px;
+    font-size: 1em; /* 全体的に少し小さく */
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    margin: 8px;
-    min-width: 90px; /* 少し小さく */
+    margin: 8px 5px; /* マージンを調整 */
+    min-width: 80px; /* 最小幅を設定 */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -108,6 +115,18 @@ h1 {
     background-color: #007bb5;
 }
 
+/* 誤差調整ボタンのスタイル */
+.timer-controls button[onclick*="adjustTimer"] {
+    background-color: #9b59b6; /* 紫色 */
+    font-weight: bold;
+    min-width: 60px;
+    padding: 8px 15px; /* 小さめ */
+}
+.timer-controls button[onclick*="adjustTimer"]:hover {
+    background-color: #8e44ad;
+}
+
+
 /* 機能2, 3のステータスと次の音表示を格納するコンテナ */
 .status-display-container {
     min-height: 80px;
@@ -120,7 +139,7 @@ h1 {
 
 /* 全体の時間表示を大きく、黒字に */
 .next-beep-time {
-    font-size: 3.5em; /* 以前の2.2emから大幅に大きく */
+    font-size: 4.0em; /* さらに大きく */
     font-weight: bold;
     color: #000000; /* 黒字に */
     margin-top: 5px;
@@ -131,12 +150,19 @@ h1 {
 }
 
 .current-status {
-    font-size: 1em; /* 少し小さく */
-    font-weight: normal; /* 太字を解除 */
-    color: #555; /* 色を落ち着かせる */
+    font-size: 0.9em; /* さらに小さく */
+    font-weight: normal;
+    color: #555;
     margin: 0;
 }
 
+/* 誤差調整情報の表示 */
+.adjustment-info {
+    font-size: 0.8em; /* 小さめ */
+    font-weight: bold;
+    margin-top: 5px;
+    min-height: 1em; /* 表示がない時もスペース確保 */
+}
 
 /* --- 機能1の個別タイマーのレイアウト --- */
 .feature1-item {
@@ -153,7 +179,7 @@ h1 {
 
 .feature1-item h3 {
     margin: 0;
-    font-size: 1.1em; /* 少し小さく */
+    font-size: 1em; /* さらに小さく */
     color: #333;
     flex-grow: 1;
     text-align: left;
@@ -162,13 +188,15 @@ h1 {
 .feature1-item .timer-controls {
     flex-shrink: 0;
     margin-right: 15px;
+    display: flex; /* 機能1のボタンもflexに */
+    align-items: center;
 }
 
 .feature1-item .timer-controls button {
-    padding: 7px 15px; /* さらに小さく */
-    font-size: 0.9em; /* さらに小さく */
-    margin: 0;
-    min-width: 70px; /* さらに小さく */
+    padding: 7px 15px;
+    font-size: 0.9em;
+    margin: 0 3px; /* マージンを調整 */
+    min-width: 60px;
 }
 
 .feature1-item .current-status-group {
@@ -182,16 +210,16 @@ h1 {
 
 .feature1-item .current-status {
     margin: 0;
-    font-size: 0.9em; /* さらに小さく */
+    font-size: 0.8em; /* さらに小さく */
     min-height: auto;
-    color: #555; /* 色を落ち着かせる */
+    color: #555;
 }
 
 /* 機能1の時間を大きくする (feature1-item固有のサイズ) */
 .feature1-item .next-beep-time {
-    font-size: 2.5em; /* 以前の1.8emから変更 */
+    font-size: 2.8em; /* さらに大きく */
     font-weight: bold;
-    color: #000000; /* 黒字に */
+    color: #000000;
 }
 
 .feature1-outer-section {
@@ -201,66 +229,3 @@ h1 {
 
 .feature1-outer-section h2 {
     margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.8em;
-    border-bottom: 2px solid #ecf0f1;
-    padding-bottom: 10px;
-}
-
-/* --- レスポンシブ調整 --- */
-@media (max-width: 600px) {
-    h1 {
-        font-size: 2em;
-    }
-    .all-reset-button {
-        padding: 12px 25px;
-        font-size: 1.1em;
-    }
-    .timer-section {
-        padding: 15px 20px;
-        margin-bottom: 20px;
-    }
-    .timer-section h2 {
-        font-size: 1.5em;
-        margin-bottom: 15px;
-    }
-    .timer-controls button {
-        padding: 8px 15px; /* スマホ時のボタンサイズ */
-        font-size: 0.9em;
-        margin: 5px;
-    }
-
-    /* 機能1のスマホ時のレイアウト調整 */
-    .feature1-item {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .feature1-item h3 {
-        flex-grow: 1;
-        margin-bottom: 0;
-        text-align: left;
-        font-size: 1em; /* スマホ時のタイマー名サイズ */
-    }
-    .feature1-item .timer-controls {
-        margin-right: 10px;
-        margin-bottom: 0;
-    }
-    .feature1-item .current-status-group {
-        width: auto;
-        align-items: flex-end;
-    }
-    .feature1-item .current-status {
-        font-size: 0.8em; /* スマホ時の機能1のステータス文字サイズ */
-    }
-    .feature1-item .next-beep-time {
-        font-size: 2em; /* スマホ時の機能1の時間を調整 */
-    }
-    /* 機能2,3のスマホ時の文字サイズ */
-    .next-beep-time {
-        font-size: 3em; /* スマホ時の機能2,3の時間を調整 */
-    }
-    .status-display-container {
-        min-height: 70px;
-    }
-}
