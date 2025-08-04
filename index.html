@@ -122,7 +122,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin-top: 15px; /* ボタンとの間隔を調整 */
+            margin-top: 15px;
         }
 
         .current-status {
@@ -178,10 +178,10 @@
 
         .feature1-item .current-status-group {
             flex-shrink: 0;
-            text-align: right;
+            text-align: right; /* デフォルトで右寄せ */
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
+            align-items: flex-end; /* テキストを右寄せ */
             min-width: 90px;
         }
 
@@ -233,26 +233,32 @@
                 font-size: 1em;
                 margin: 5px;
             }
+
+            /* 機能1のスマホ時のレイアウト調整 */
             .feature1-item {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction: row; /* スマホでも横並びを維持 */
+                justify-content: space-between; /* 左右に要素を配置 */
+                align-items: center; /* 垂直方向中央寄せ */
             }
             .feature1-item h3 {
-                margin-bottom: 5px;
+                flex-grow: 1;
+                margin-bottom: 0; /* マージンをリセット */
+                text-align: left;
             }
             .feature1-item .timer-controls {
-                margin-right: 0;
-                margin-bottom: 5px;
+                margin-right: 10px; /* ボタンと時間の間のスペース */
+                margin-bottom: 0; /* マージンをリセット */
             }
             .feature1-item .current-status-group {
-                width: 100%;
-                align-items: flex-start;
+                width: auto; /* 幅を自動調整 */
+                align-items: flex-end; /* 右寄せを維持 */
             }
-            .next-beep-time {
-                font-size: 1.8em;
-            }
+            .feature1-item .current-status,
             .feature1-item .next-beep-time {
-                font-size: 1em;
+                font-size: 1em; /* スマホでの機能1の文字サイズを小さく保つ */
+            }
+            .next-beep-time { /* 機能2,3のスマホ時の文字サイズ */
+                font-size: 1.8em;
             }
             .status-display-container {
                 min-height: 70px;
@@ -415,40 +421,48 @@
             }
 
             const now = Date.now();
-            let displayTime = ''; // 表示する時間
-            let nextRelevantBeep = null; // 次に表示すべき最も近い音
+            let displayTime = '';
+            let targetBeepTime = null;
 
-            // timer.nextBeepTimes は常にソートされている前提
-            const allRemainingBeeps = timers[timerId].nextBeepTimes.filter(t => t > now);
+            const allFutureBeeps = timers[timerId].nextBeepTimes.filter(t => t > now).sort((a,b) => a - b);
 
-            if (timerId >= 1 && timerId <= 4) { // 機能1の場合
-                // 110秒後の音だけを表示
-                const beep110Time = allRemainingBeeps.find(t => {
-                    const elapsed = t - timers[timerId].startTime;
-                    return Math.abs(elapsed - (110 * 1000)) < 500; // 誤差を許容
-                });
-                nextRelevantBeep = beep110Time;
-            } else if (timerId === 6 || timerId === 7) { // 機能2, 3の場合
-                // 最初の110秒後の音、またはサイクル内の次の音を表示
-                if (allRemainingBeeps.length > 0) {
-                    // 最も近い音
-                    const firstBeep = allRemainingBeeps[0];
-                    // その次にくる、サイクル内の「主要な」音 (例: 機能2なら15秒ごと)
-                    const secondBeep = allRemainingBeeps[1];
+            if (timerId >= 1 && timerId <= 4) { // 機能1
+                // 110秒後の音（つまり2番目の音）までの時間を表示
+                // nextBeepTimesには105秒と110秒が入っているので、2番目の音が110秒
+                if (allFutureBeeps.length >= 2) {
+                    targetBeepTime = allFutureBeeps[1]; // 2番目の音
+                } else if (allFutureBeeps.length === 1) {
+                    // 105秒の音が鳴り終わって、110秒の音が残っている場合
+                    targetBeepTime = allFutureBeeps[0];
+                }
+            } else if (timerId === 6 || timerId === 7) { // 機能2, 3
+                // 110秒の音がまだ来ていない場合、110秒の音を表示
+                // 110秒の音が鳴った後は、サイクル内の次の「主要な」音（15秒後または12.6秒後）を表示
+                const initial110Beep = timers[timerId].startTime + (110 * 1000);
 
-                    // 110秒の音がまだ来ていない場合、それが主要
-                    if (timers[timerId].startTime && firstBeep && (firstBeep - timers[timerId].startTime < 110 * 1000 + 1000)) { // 110秒までまだ時間がある
-                         nextRelevantBeep = firstBeep;
-                    } else if (secondBeep) { // 既に110秒が過ぎているか、より近い次のサイクル音がある場合
-                         nextRelevantBeep = secondBeep;
-                    } else if (firstBeep) { // 残り一つしかない場合 (例: サイクル内の最後の音)
-                         nextRelevantBeep = firstBeep;
+                if (now < initial110Beep) { // まだ110秒の音が鳴っていない場合
+                    targetBeepTime = initial110Beep;
+                } else {
+                    // 110秒の音が鳴った後、サイクル内の次の音を探す
+                    // allFutureBeepsの中から、サイクル開始時刻（110秒後以降の最新のサイクル開始）を考慮して次の「主要な」音を選ぶ
+                    // ここではシンプルに、現在時刻から見て最も近い主要な音（サイクル内の2つ目の音）を探す
+                    // （より正確には、サイクルが始まった時点からの経過時間で判断することも可能だが複雑になるため、ここでは最も近い将来の主要音を選択）
+
+                    // 現在時刻以降の音のうち、主要なサイクル音がどれかを見つける
+                    // 例えば機能2の場合、15秒ごとの音を主要なものとする
+                    // allFutureBeepsの中から、現在時刻から見て一番近い主要な音が何かを判断する
+                    // すでに110秒の音が鳴っている場合、nextBeepTimesにはサイクル音が格納されている
+                    // ここでは、リストの2番目の音を次の主要音とみなす（最初の音は10秒/7.6秒、2番目が15秒/12.6秒）
+                    if (allFutureBeeps.length >= 2) {
+                        targetBeepTime = allFutureBeeps[1]; // サイクル内の2番目の音
+                    } else if (allFutureBeeps.length === 1) {
+                        targetBeepTime = allFutureBeeps[0]; // サイクル内の1番目（最後の音）
                     }
                 }
             }
 
-            if (nextRelevantBeep) {
-                const remainingMs = nextRelevantBeep - now;
+            if (targetBeepTime) {
+                const remainingMs = targetBeepTime - now;
                 const totalSeconds = Math.ceil(remainingMs / 1000);
                 const minutes = Math.floor(totalSeconds / 60);
                 const seconds = totalSeconds % 60;
@@ -459,18 +473,20 @@
 
                 if (remainingMs <= 0) {
                     displayTime = '00:00';
-                    element.style.color = '#3498db'; // 色を青に戻す
+                    element.style.color = '#3498db';
                 } else {
-                    element.style.color = '#7f8c8d'; // 通常のグレーの色
+                    element.style.color = '#7f8c8d';
                 }
             } else {
-                displayTime = ''; // 表示すべき音がない場合は空
+                displayTime = '';
             }
             element.textContent = displayTime;
         }
 
+
         // startTimer 関数の修正は、nextBeepTimes の管理方法と、updateNextBeepTime の呼び出し方です。
-        // updateNextBeepTime に timerId を渡すように変更します。
+        // nextBeepTimesには、そのタイマーで鳴る**すべての音のタイムスタンプ**を登録するようにし、
+        // updateNextBeepTime関数で表示すべき音を選別します。
 
         function startTimer1(timerId) {
             const timer = timers[timerId];
@@ -486,16 +502,14 @@
 
             const beep105Time = timer.startTime + (105 * 1000);
             const beep110Time = timer.startTime + (110 * 1000);
-            // nextBeepTimesには全ての音の時刻を登録するが、表示は110秒のみに制御
-            timer.nextBeepTimes = [beep105Time, beep110Time].sort((a, b) => a - b);
+            timer.nextBeepTimes = [beep105Time, beep110Time].sort((a, b) => a - b); // 全ての音を登録
 
             const timeout1 = setTimeout(() => {
                 playBeep();
                 updateStatus(timer.statusElement, '105秒経過！');
                 setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                 console.log(`機能${timerId}: 105秒後に音が鳴りました。`);
-                // 鳴った音はリストから削除
-                timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
+                timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now()); // 鳴った音を削除
             }, 105 * 1000);
 
             const timeout2 = setTimeout(() => {
@@ -503,7 +517,7 @@
                 updateStatus(timer.statusElement, '110秒経過！完了。', '#2ecc71');
                 setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                 console.log(`機能${timerId}: 110秒後に音が鳴りました。`);
-                timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
+                timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now()); // 鳴った音を削除
                 if (timer.updateInterval) {
                      clearInterval(timer.updateInterval);
                      timer.updateInterval = null;
@@ -513,9 +527,8 @@
             timer.timeouts.push(timeout1, timeout2);
 
             timer.updateInterval = setInterval(() => {
-                // 次の音のタイムスタンプを渡す (updateNextBeepTime関数内で表示制御)
                 const nextBeep = timer.nextBeepTimes.length > 0 ? timer.nextBeepTimes[0] : '';
-                updateNextBeepTime(timer.nextBeepElement, nextBeep, timerId);
+                updateNextBeepTime(timer.nextBeepElement, nextBeep, timerId); // timerIdを渡す
             }, 1000);
         }
 
@@ -535,17 +548,17 @@
             const initialBeep110Time = timer.startTime + (110 * 1000);
             timer.nextBeepTimes = [initialBeep105Time, initialBeep110Time].sort((a, b) => a - b);
 
-            const playCycleBeeps = () => {
-                const currentCycleBaseTime = Date.now(); // サイクル開始時刻ではなく、現在の時刻を基準にする
-                const cycleBeep10Time = currentCycleBaseTime + (10 * 1000);
-                const cycleBeep15Time = currentCycleBaseTime + (15 * 1000);
+            const scheduleCycleBeeps = () => {
+                const now = Date.now();
+                const cycleBeep10Time = now + (10 * 1000); // 現在時刻から10秒後
+                const cycleBeep15Time = now + (15 * 1000); // 現在時刻から15秒後
 
                 timer.nextBeepTimes.push(cycleBeep10Time, cycleBeep15Time);
                 timer.nextBeepTimes.sort((a, b) => a - b); // ソートして最も近い音が先頭に来るように
 
                 const cycleTimeout1 = setTimeout(() => {
                     playBeep();
-                    updateStatus(timer.statusElement, `音1鳴動 (サイクル開始から10秒)`, '#f39c12');
+                    updateStatus(timer.statusElement, `音1鳴動 (サイクルから10秒)`, '#f39c12');
                     setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                     console.log(`機能${timerId}: サイクルから10秒後に音が鳴りました。`);
                     timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -553,7 +566,7 @@
 
                 const cycleTimeout2 = setTimeout(() => {
                     playBeep();
-                    updateStatus(timer.statusElement, `音2鳴動 (サイクル開始から15秒)`, '#f39c12');
+                    updateStatus(timer.statusElement, `音2鳴動 (サイクルから15秒)`, '#f39c12');
                     setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                     console.log(`機能${timerId}: サイクルから15秒後に音が鳴りました。`);
                     timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -574,13 +587,14 @@
                 updateStatus(timer.statusElement, '110秒経過！繰り返し開始。', '#3498db');
                 setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                 console.log(`機能${timerId}: 110秒後に音が鳴りました。初回完了。`);
-                timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
+                timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now()); // 110秒の音をリストから削除
 
-                playCycleBeeps(); // 初回繰り返しサイクル開始
+                // 初回サイクルをスケジュール
+                scheduleCycleBeeps();
 
                 const intervalId = setInterval(() => {
-                    playCycleBeeps();
-                }, 15 * 1000); // 15秒ごとにサイクルを繰り返す
+                    scheduleCycleBeeps();
+                }, 15 * 1000); // 15秒ごとに新しいサイクルをスケジュール
                 timer.intervals.push(intervalId);
 
             }, 110 * 1000);
@@ -609,17 +623,17 @@
             const initialBeep110Time = timer.startTime + (110 * 1000);
             timer.nextBeepTimes = [initialBeep105Time, initialBeep110Time].sort((a, b) => a - b);
 
-            const playCycleBeeps = () => {
-                const currentCycleBaseTime = Date.now();
-                const cycleBeep7_6Time = currentCycleBaseTime + (7.6 * 1000);
-                const cycleBeep12_6Time = currentCycleBaseTime + (12.6 * 1000);
+            const scheduleCycleBeeps = () => {
+                const now = Date.now();
+                const cycleBeep7_6Time = now + (7.6 * 1000);
+                const cycleBeep12_6Time = now + (12.6 * 1000);
 
                 timer.nextBeepTimes.push(cycleBeep7_6Time, cycleBeep12_6Time);
                 timer.nextBeepTimes.sort((a, b) => a - b);
 
                 const cycleTimeout1 = setTimeout(() => {
                     playBeep();
-                    updateStatus(timer.statusElement, `音1鳴動 (サイクル開始から7.6秒)`, '#f39c12');
+                    updateStatus(timer.statusElement, `音1鳴動 (サイクルから7.6秒)`, '#f39c12');
                     setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                     console.log(`機能${timerId}: サイクルから7.6秒後に音が鳴りました。`);
                     timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -627,7 +641,7 @@
 
                 const cycleTimeout2 = setTimeout(() => {
                     playBeep();
-                    updateStatus(timer.statusElement, `音2鳴動 (サイクル開始から12.6秒)`, '#f39c12');
+                    updateStatus(timer.statusElement, `音2鳴動 (サイクルから12.6秒)`, '#f39c12');
                     setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
                     console.log(`機能${timerId}: サイクルから12.6秒後に音が鳴りました。`);
                     timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -650,10 +664,10 @@
                 console.log(`機能${timerId}: 110秒後に音が鳴りました。初回完了。`);
                 timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
 
-                playCycleBeeps();
+                scheduleCycleBeeps();
 
                 const intervalId = setInterval(() => {
-                    playCycleBeeps();
+                    scheduleCycleBeeps();
                 }, 12.6 * 1000);
                 timer.intervals.push(intervalId);
 
