@@ -115,15 +115,33 @@ h1 {
     background-color: #007bb5;
 }
 
-/* 誤差調整ボタンのスタイル */
-.timer-controls button[onclick*="adjustTimer"] {
+/* 誤差調整ボタン（記号）のスタイル */
+.adjust-button {
     background-color: #9b59b6; /* 紫色 */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 15px; /* パディングを調整 */
+    font-size: 1.6em; /* 記号を大きく */
     font-weight: bold;
-    min-width: 60px;
-    padding: 8px 15px; /* 小さめ */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 8px 5px;
+    min-width: 45px; /* 最小幅を調整 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
-.timer-controls button[onclick*="adjustTimer"]:hover {
+
+.adjust-button:hover {
     background-color: #8e44ad;
+    transform: translateY(-2px);
+}
+
+.adjust-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -229,3 +247,76 @@ h1 {
 
 .feature1-outer-section h2 {
     margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 10px;
+}
+
+/* --- レスポンシブ調整 --- */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2em;
+    }
+    .all-reset-button {
+        padding: 12px 25px;
+        font-size: 1.1em;
+    }
+    .timer-section {
+        padding: 15px 20px;
+        margin-bottom: 20px;
+    }
+    .timer-section h2 {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+    .timer-controls button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+        margin: 5px 3px;
+    }
+    /* スマホでの調整ボタンのスタイル */
+    .adjust-button {
+        min-width: 40px; /* さらに小さく */
+        padding: 6px 10px; /* パディングも小さく */
+        font-size: 1.4em; /* 記号も少し小さく */
+    }
+
+    /* 機能1のスマホ時のレイアウト調整 */
+    .feature1-item {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .feature1-item h3 {
+        flex-grow: 1;
+        margin-bottom: 0;
+        text-align: left;
+        font-size: 0.9em;
+    }
+    .feature1-item .timer-controls {
+        margin-right: 5px;
+        margin-bottom: 0;
+    }
+    .feature1-item .current-status-group {
+        width: auto;
+        align-items: flex-end;
+        min-width: 80px;
+    }
+    .feature1-item .current-status {
+        font-size: 0.7em;
+    }
+    .feature1-item .next-beep-time {
+        font-size: 2.2em;
+    }
+    /* 機能2,3のスマホ時の文字サイズ */
+    .next-beep-time {
+        font-size: 3.2em;
+    }
+    .status-display-container {
+        min-height: 70px;
+    }
+    .adjustment-info {
+        font-size: 0.7em;
+    }
+}
