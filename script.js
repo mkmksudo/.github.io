@@ -319,6 +319,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function startRepeatingTimer(timerId) {
         const timer = timers[timerId];
 
+        // 機能3が開始される際は機能2をリセット
+        if (timerId === 7) {
+            resetTimer(6);
+        }
+
         resetTimer(timerId);
 
         timer.startTime = Date.now();
@@ -407,11 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
             timer.adjustmentElement = section.querySelector('.adjustment-info');
 
             section.querySelector('.start-button').addEventListener('click', () => {
-                // 機能3のスタートボタンが押された場合
-                if (timerId === 7) {
-                    resetTimer(6); // 機能2をリセット
-                    startRepeatingTimer(timerId);
-                } else if (timerId >= 1 && timerId <= 4) {
+                if (timerId >= 1 && timerId <= 4) {
                     startFixedTimer(timerId);
                 } else {
                     startRepeatingTimer(timerId);
