@@ -1,52 +1,25 @@
-const ALL_TIMER_IDS = [1, 2, 3, 4, 6, 7];
-const timers = {
-    // 機能1
-    1: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
-    2: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
-    3: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
-    4: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
-    // 機能2, 3
-    6: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null, adjustment: 0, adjustmentElement: null, config: { cycleDuration: 15, beep1Offset: 10, beep2Offset: 15 } },
-    7: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null, adjustment: 0, adjustmentElement: null, config: { cycleDuration: 12.6, beep1Offset: 7.6, beep2Offset: 12.6 } }
-};
-
-// MP3ファイルの警告音を再生する関数
-function playBeep() {
-    try {
-        const audio = new Audio('beep.mp3');
-        audio.play().catch(e => console.error("音声の再生に失敗しました:", e));
-    } catch (e) {
-        console.error("音声の再生に失敗しました:", e);
-    }
-}
-
-// すべてのタイマーをリセットする関数 (グローバルに配置)
-function resetAllTimers() {
-    ALL_TIMER_IDS.forEach(id => {
-        const timer = timers[id];
-        if (id !== 6 && id !== 7) {
-            resetTimer(id);
-        } else {
-            timer.timeouts.forEach(clearTimeout);
-            timer.intervals.forEach(clearInterval);
-            if (timer.updateInterval) {
-                clearInterval(timer.updateInterval);
-            }
-            timer.timeouts = [];
-            timer.intervals = [];
-            timer.startTime = null;
-            timer.nextBeepTimes = [];
-            timer.updateInterval = null;
-            updateStatus(timer.statusElement, '待機中', '#7f8c8d');
-            updateNextBeepTime(timer.nextBeepElement, '', id);
-            updateAdjustmentInfo(timer.adjustmentElement, timer.adjustment);
-        }
-    });
-    console.log('すべてのタイマーがリセットされました。');
-}
-
-// ページが読み込まれた後に実行される処理
 document.addEventListener('DOMContentLoaded', () => {
+
+    const ALL_TIMER_IDS = [1, 2, 3, 4, 6, 7];
+    const timers = {
+        // 機能1
+        1: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
+        2: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
+        3: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
+        4: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
+        // 機能2, 3
+        6: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null, adjustment: 0, adjustmentElement: null, config: { cycleDuration: 15, beep1Offset: 10, beep2Offset: 15 } },
+        7: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null, adjustment: 0, adjustmentElement: null, config: { cycleDuration: 12.6, beep1Offset: 7.6, beep2Offset: 12.6 } }
+    };
+    
+    function playBeep() {
+        try {
+            const audio = new Audio('beep.mp3');
+            audio.play().catch(e => console.error("音声の再生に失敗しました:", e));
+        } catch (e) {
+            console.error("音声の再生に失敗しました:", e);
+        }
+    }
 
     function initializeDOM() {
         // 機能1のタイマーを動的に生成
@@ -68,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
             feature1Container.appendChild(timerItem);
         }
 
-        // 全リセットボタンにイベントリスナーを設定
         document.querySelectorAll('.all-reset-button').forEach(button => {
             button.addEventListener('click', resetAllTimers);
         });
@@ -76,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.timer-section[data-timer-id]').forEach(section => {
             const timerId = parseInt(section.dataset.timerId);
             const timer = timers[timerId];
-
+            
             timer.sectionElement = section;
             timer.statusElement = section.querySelector('.current-status');
             timer.nextBeepElement = section.querySelector('.next-beep-time');
@@ -104,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             resetTimer(timerId);
         });
-
+        
         document.querySelectorAll('.timer-item').forEach(item => {
             const timerId = parseInt(item.dataset.timerId);
             const timer = timers[timerId];
@@ -112,11 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
             timer.sectionElement = item;
             timer.statusElement = item.querySelector('.current-status');
             timer.nextBeepElement = item.querySelector('.next-beep-time');
-
+            
             item.querySelector('.start-button').addEventListener('click', () => {
                 startFixedTimer(timerId);
             });
-
+            
             resetTimer(timerId);
         });
     }
@@ -143,6 +115,30 @@ document.addEventListener('DOMContentLoaded', () => {
             updateAdjustmentInfo(timer.adjustmentElement, timer.adjustment);
         }
         console.log(`機能${timerId}のタイマーがリセットされました。`);
+    }
+
+    function resetAllTimers() {
+        ALL_TIMER_IDS.forEach(id => {
+            const timer = timers[id];
+            if (id !== 6 && id !== 7) {
+                 resetTimer(id);
+            } else {
+                 timer.timeouts.forEach(clearTimeout);
+                 timer.intervals.forEach(clearInterval);
+                 if (timer.updateInterval) {
+                     clearInterval(timer.updateInterval);
+                 }
+                 timer.timeouts = [];
+                 timer.intervals = [];
+                 timer.startTime = null;
+                 timer.nextBeepTimes = [];
+                 timer.updateInterval = null;
+                 updateStatus(timer.statusElement, '待機中', '#7f8c8d');
+                 updateNextBeepTime(timer.nextBeepElement, '', id);
+                 updateAdjustmentInfo(timer.adjustmentElement, timer.adjustment);
+            }
+        });
+        console.log('すべてのタイマーがリセットされました。');
     }
 
     function updateStatus(statusElement, message, color = '#3498db') {
