@@ -407,7 +407,11 @@ document.addEventListener('DOMContentLoaded', () => {
             timer.adjustmentElement = section.querySelector('.adjustment-info');
 
             section.querySelector('.start-button').addEventListener('click', () => {
-                if (timerId >= 1 && timerId <= 4) {
+                // 機能3のスタートボタンが押された場合
+                if (timerId === 7) {
+                    resetTimer(6); // 機能2をリセット
+                    startRepeatingTimer(timerId);
+                } else if (timerId >= 1 && timerId <= 4) {
                     startFixedTimer(timerId);
                 } else {
                     startRepeatingTimer(timerId);
