@@ -12,6 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
         7: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null, adjustment: 0, adjustmentElement: null, config: { cycleDuration: 12.6, beep1Offset: 7.6, beep2Offset: 12.6 } }
     };
     
+    // ===================================
+    // ユーティリティ関数
+    // ===================================
+
+    // MP3ファイルの警告音を再生する関数
     function playBeep() {
         try {
             const audio = new Audio('beep.mp3');
@@ -21,78 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function initializeDOM() {
-        // 機能1のタイマーを動的に生成
-        const feature1Container = document.getElementById('feature1-container');
-        for (let i = 1; i <= 4; i++) {
-            const timerItem = document.createElement('div');
-            timerItem.className = 'timer-item';
-            timerItem.setAttribute('data-timer-id', i);
-            timerItem.innerHTML = `
-                <h3>タイマー 1-${i}</h3>
-                <div class="timer-controls">
-                    <button class="start-button">スタート</button>
-                </div>
-                <div class="status-group">
-                    <div class="current-status"></div>
-                    <div class="next-beep-time"></div>
-                </div>
-            `;
-            feature1Container.appendChild(timerItem);
-        }
-
-        document.querySelectorAll('.all-reset-button').forEach(button => {
-            button.addEventListener('click', resetAllTimers);
-        });
-
-        document.querySelectorAll('.timer-section[data-timer-id]').forEach(section => {
-            const timerId = parseInt(section.dataset.timerId);
-            const timer = timers[timerId];
-            
-            timer.sectionElement = section;
-            timer.statusElement = section.querySelector('.current-status');
-            timer.nextBeepElement = section.querySelector('.next-beep-time');
-            timer.adjustmentElement = section.querySelector('.adjustment-info');
-
-            section.querySelector('.start-button').addEventListener('click', () => {
-                if (timerId >= 1 && timerId <= 4) {
-                    startFixedTimer(timerId);
-                } else {
-                    startRepeatingTimer(timerId);
-                }
-            });
-
-            const resetButton = section.querySelector('.reset-button');
-            if (resetButton) {
-                resetButton.addEventListener('click', () => resetTimer(timerId));
-            }
-
-            section.querySelectorAll('.adjust-button.minus').forEach(button => {
-                button.addEventListener('click', () => adjustTimer(timerId, -0.1));
-            });
-            section.querySelectorAll('.adjust-button.plus').forEach(button => {
-                button.addEventListener('click', () => adjustTimer(timerId, 0.1));
-            });
-
-            resetTimer(timerId);
-        });
-        
-        document.querySelectorAll('.timer-item').forEach(item => {
-            const timerId = parseInt(item.dataset.timerId);
-            const timer = timers[timerId];
-
-            timer.sectionElement = item;
-            timer.statusElement = item.querySelector('.current-status');
-            timer.nextBeepElement = item.querySelector('.next-beep-time');
-            
-            item.querySelector('.start-button').addEventListener('click', () => {
-                startFixedTimer(timerId);
-            });
-            
-            resetTimer(timerId);
-        });
-    }
-
+    // タイマーのリセット処理をまとめた関数
     function resetTimer(timerId) {
         const timer = timers[timerId];
         if (!timer) return;
@@ -117,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`機能${timerId}のタイマーがリセットされました。`);
     }
 
+    // 全タイマーをリセットする関数
     function resetAllTimers() {
         ALL_TIMER_IDS.forEach(id => {
             const timer = timers[id];
@@ -237,6 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+    
+    // ===================================
+    // タイマー開始・停止ロジック
+    // ===================================
 
     function scheduleInitialBeeps(timerId) {
         const timer = timers[timerId];
@@ -428,5 +367,85 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.timeouts.push(cycleTimeout1, cycleTimeout2);
     }
 
+    // ===================================
+    // DOM初期化
+    // ===================================
+    
+    // ページロード時に全てのタイマーの表示を初期化
+    function initializeDOM() {
+        // 機能1のタイマーを動的に生成
+        const feature1Container = document.getElementById('feature1-container');
+        for (let i = 1; i <= 4; i++) {
+            const timerItem = document.createElement('div');
+            timerItem.className = 'timer-item';
+            timerItem.setAttribute('data-timer-id', i);
+            timerItem.innerHTML = `
+                <h3>タイマー 1-${i}</h3>
+                <div class="timer-controls">
+                    <button class="start-button">スタート</button>
+                </div>
+                <div class="status-group">
+                    <div class="current-status"></div>
+                    <div class="next-beep-time"></div>
+                </div>
+            `;
+            feature1Container.appendChild(timerItem);
+        }
+
+        // 全てのボタンにイベントリスナーを設定
+        document.querySelectorAll('.all-reset-button').forEach(button => {
+            button.addEventListener('click', resetAllTimers);
+        });
+
+        document.querySelectorAll('.timer-section[data-timer-id]').forEach(section => {
+            const timerId = parseInt(section.dataset.timerId);
+            const timer = timers[timerId];
+            
+            timer.sectionElement = section;
+            timer.statusElement = section.querySelector('.current-status');
+            timer.nextBeepElement = section.querySelector('.next-beep-time');
+            timer.adjustmentElement = section.querySelector('.adjustment-info');
+
+            section.querySelector('.start-button').addEventListener('click', () => {
+                if (timerId >= 1 && timerId <= 4) {
+                    startFixedTimer(timerId);
+                } else {
+                    startRepeatingTimer(timerId);
+                }
+            });
+
+            const resetButton = section.querySelector('.reset-button');
+            if (resetButton) {
+                resetButton.addEventListener('click', () => resetTimer(timerId));
+            }
+
+            section.querySelectorAll('.adjust-button.minus').forEach(button => {
+                button.addEventListener('click', () => adjustTimer(timerId, -0.1));
+            });
+            section.querySelectorAll('.adjust-button.plus').forEach(button => {
+                button.addEventListener('click', () => adjustTimer(timerId, 0.1));
+            });
+
+            resetTimer(timerId);
+        });
+        
+        document.querySelectorAll('.timer-item').forEach(item => {
+            const timerId = parseInt(item.dataset.timerId);
+            const timer = timers[timerId];
+
+            timer.sectionElement = item;
+            timer.statusElement = item.querySelector('.current-status');
+            timer.nextBeepElement = item.querySelector('.next-beep-time');
+            
+            item.querySelector('.start-button').addEventListener('click', () => {
+                startFixedTimer(timerId);
+            });
+            
+            resetTimer(timerId);
+        });
+    }
+
+    // 初期化処理を実行
     initializeDOM();
+
 });
