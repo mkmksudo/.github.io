@@ -19,7 +19,6 @@ h1 {
     text-align: center;
 }
 
-/* 全リセットボタンのスタイル */
 .all-reset-container {
     margin-bottom: 40px;
     text-align: center;
@@ -49,7 +48,6 @@ h1 {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* --- タイマーセクション共通スタイル --- */
 .timer-section {
     background-color: #ffffff;
     border-radius: 12px;
@@ -71,15 +69,10 @@ h1 {
     padding-bottom: 10px;
 }
 
-.timer-info {
-    display: none;
-}
-
-/* ボタン共通スタイル */
 .timer-controls {
-    display: flex; /* ボタンを横並びにする */
-    flex-wrap: wrap; /* ボタンが多すぎたら改行 */
-    justify-content: center; /* 中央寄せ */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     margin-top: 15px;
 }
 
@@ -89,11 +82,11 @@ h1 {
     border: none;
     border-radius: 8px;
     padding: 10px 20px;
-    font-size: 1em; /* 全体的に少し小さく */
+    font-size: 1em;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    margin: 8px 5px; /* マージンを調整 */
-    min-width: 80px; /* 最小幅を設定 */
+    margin: 8px 5px;
+    min-width: 80px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -107,27 +100,26 @@ h1 {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.timer-controls button.reset {
+.timer-controls .reset-button {
     background-color: #008CBA;
 }
 
-.timer-controls button.reset:hover {
+.timer-controls .reset-button:hover {
     background-color: #007bb5;
 }
 
-/* 誤差調整ボタン（記号）のスタイル */
 .adjust-button {
-    background-color: #9b59b6; /* 紫色 */
+    background-color: #9b59b6;
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 8px 15px; /* パディングを調整 */
-    font-size: 1.6em; /* 記号を大きく */
+    padding: 8px 15px;
+    font-size: 1.6em;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     margin: 8px 5px;
-    min-width: 45px; /* 最小幅を調整 */
+    min-width: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -144,8 +136,6 @@ h1 {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-
-/* 機能2, 3のステータスと次の音表示を格納するコンテナ */
 .status-display-container {
     min-height: 80px;
     display: flex;
@@ -155,35 +145,34 @@ h1 {
     margin-top: 15px;
 }
 
-/* 全体の時間表示を大きく、黒字に */
 .next-beep-time {
-    font-size: 4.0em; /* さらに大きく */
+    font-size: 4.0em;
     font-weight: bold;
-    color: #000000; /* 黒字に */
+    color: #000000;
     margin-top: 5px;
     min-height: auto;
 }
+
 .next-beep-time:empty {
     display: none;
 }
 
 .current-status {
-    font-size: 0.9em; /* さらに小さく */
+    font-size: 0.9em;
     font-weight: normal;
     color: #555;
     margin: 0;
 }
 
-/* 誤差調整情報の表示 */
 .adjustment-info {
-    font-size: 0.8em; /* 小さめ */
+    font-size: 0.8em;
     font-weight: bold;
     margin-top: 5px;
-    min-height: 1em; /* 表示がない時もスペース確保 */
+    min-height: 1em;
 }
 
-/* --- 機能1の個別タイマーのレイアウト --- */
-.feature1-item {
+/* 機能1の個別タイマーのスタイル（動的に生成される要素に対応） */
+.timer-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -191,33 +180,33 @@ h1 {
     border-bottom: 1px solid #eee;
 }
 
-.feature1-item:last-child {
+.timer-item:last-child {
     border-bottom: none;
 }
 
-.feature1-item h3 {
+.timer-item h3 {
     margin: 0;
-    font-size: 1em; /* さらに小さく */
+    font-size: 1em;
     color: #333;
     flex-grow: 1;
     text-align: left;
 }
 
-.feature1-item .timer-controls {
+.timer-item .timer-controls {
     flex-shrink: 0;
     margin-right: 15px;
-    display: flex; /* 機能1のボタンもflexに */
+    display: flex;
     align-items: center;
 }
 
-.feature1-item .timer-controls button {
+.timer-item .timer-controls .start-button {
     padding: 7px 15px;
     font-size: 0.9em;
-    margin: 0 3px; /* マージンを調整 */
+    margin: 0 3px;
     min-width: 60px;
 }
 
-.feature1-item .current-status-group {
+.timer-item .status-group {
     flex-shrink: 0;
     text-align: right;
     display: flex;
@@ -226,31 +215,17 @@ h1 {
     min-width: 90px;
 }
 
-.feature1-item .current-status {
+.timer-item .current-status {
     margin: 0;
-    font-size: 0.8em; /* さらに小さく */
+    font-size: 0.8em;
     min-height: auto;
     color: #555;
 }
 
-/* 機能1の時間を大きくする (feature1-item固有のサイズ) */
-.feature1-item .next-beep-time {
-    font-size: 2.8em; /* さらに大きく */
+.timer-item .next-beep-time {
+    font-size: 2.8em;
     font-weight: bold;
     color: #000000;
-}
-
-.feature1-outer-section {
-    max-width: 500px;
-    margin-bottom: 25px;
-}
-
-.feature1-outer-section h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.8em;
-    border-bottom: 2px solid #ecf0f1;
-    padding-bottom: 10px;
 }
 
 /* --- レスポンシブ調整 --- */
@@ -275,41 +250,37 @@ h1 {
         font-size: 0.9em;
         margin: 5px 3px;
     }
-    /* スマホでの調整ボタンのスタイル */
     .adjust-button {
-        min-width: 40px; /* さらに小さく */
-        padding: 6px 10px; /* パディングも小さく */
-        font-size: 1.4em; /* 記号も少し小さく */
+        min-width: 40px;
+        padding: 6px 10px;
+        font-size: 1.4em;
     }
-
-    /* 機能1のスマホ時のレイアウト調整 */
-    .feature1-item {
+    .timer-item {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
     }
-    .feature1-item h3 {
+    .timer-item h3 {
         flex-grow: 1;
         margin-bottom: 0;
         text-align: left;
         font-size: 0.9em;
     }
-    .feature1-item .timer-controls {
+    .timer-item .timer-controls {
         margin-right: 5px;
         margin-bottom: 0;
     }
-    .feature1-item .current-status-group {
+    .timer-item .status-group {
         width: auto;
         align-items: flex-end;
         min-width: 80px;
     }
-    .feature1-item .current-status {
+    .timer-item .current-status {
         font-size: 0.7em;
     }
-    .feature1-item .next-beep-time {
+    .timer-item .next-beep-time {
         font-size: 2.2em;
     }
-    /* 機能2,3のスマホ時の文字サイズ */
     .next-beep-time {
         font-size: 3.2em;
     }
