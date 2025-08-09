@@ -311,33 +311,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM初期化
     // ===================================
     
-    // ページロード時に全てのタイマーの表示を初期化
     function initializeDOM() {
-        const feature1Container = document.querySelector('#feature1-container .timer-grid');
-        if (feature1Container) {
-            feature1Container.innerHTML = '';
-            for (let i = 1; i <= 4; i++) {
-                const timerItem = document.createElement('div');
-                timerItem.className = 'timer-item';
-                timerItem.setAttribute('data-timer-id', i);
-                timerItem.innerHTML = `
-                    <div class="timer-name">タイマー 1-${i}</div>
-                    <div class="timer-controls">
-                        <button class="start-button">スタート</button>
-                    </div>
-                    <div class="status-group">
-                        <span class="next-beep-time">待機中</span>
-                    </div>
-                `;
-                feature1Container.appendChild(timerItem);
-            }
-        }
-
         document.querySelectorAll('.all-reset-button').forEach(button => {
             button.addEventListener('click', resetAllTimers);
         });
 
-        document.querySelectorAll('.timer-item').forEach(element => {
+        document.querySelectorAll('.timer-section[data-timer-id]').forEach(element => {
             const timerId = parseInt(element.dataset.timerId);
             const timer = timers?.[timerId];
             if (!timer) return;
