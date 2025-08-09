@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.adjustment = 0; // 誤差調整をリセット
 
         if (timer.statusElement) {
-            timer.statusElement.textContent = '待機中';
+            timer.statusElement.textContent = '';
         }
         updateNextBeepTime(timer.nextBeepElement, null, timerId);
         if (timer.adjustmentElement) {
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resetTimer(timerId);
 
-        timer.startTime = Date.now();
+        timer.startTime = Date.now(); // Date.Gnow() を Date.now() に修正
         updateStatus(timer.statusElement, 'タイマー開始', '#28a745');
         setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
         
@@ -235,23 +235,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 2周目以降のループタイマーを開始
                 const loopInterval = setInterval(() => {
-                    // ループ開始時の警告音を削除
-                    // playBeep();
-                    // updateStatus(timer.statusElement, 'ループ開始！', '#ffc107');
-                    // setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
-                    // console.log(`機能${timerId}: ループ開始。`);
+                    // ループ開始時の警告音
+                    playBeep();
+                    updateStatus(timer.statusElement, 'ループ開始！', '#ffc107');
+                    setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
+                    console.log(`機能${timerId}: ループ開始。`);
                     
                     // 終了5秒前の警告音
                     timer.timeouts.push(setTimeout(() => {
                         playBeep();
                         console.log(`機能${timerId}: ループ終了5秒前に警告音が鳴りました。`);
                     }, cycleDurationMs - beepBeforeEndMs));
-
-                    // 終了時の警告音
-                    timer.timeouts.push(setTimeout(() => {
-                        playBeep();
-                        console.log(`機能${timerId}: ループ終了時に警告音が鳴りました。`);
-                    }, cycleDurationMs));
 
                 }, cycleDurationMs);
                 timer.intervals.push(loopInterval);
