@@ -3,92 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>カスタムタイマー</title>
+    <title>タイマーアプリ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>カスタムタイマー</h1>
+        <h1>タイマーアプリ</h1>
     </header>
-    <div class="all-reset-container">
-        <button class="all-reset-button">全リセット</button>
-    </div>
     <main>
-        <section class="timer-section fixed-timer">
-            <h3>機能1: 固定3回</h3>
+        <section id="feature1-container" class="timer-section fixed-timer">
+            <h3>機能1：固定時間タイマー</h3>
             <div class="timer-item" data-timer-id="1">
                 <div class="timer-name">タイマー 1-1</div>
+                <div class="status-group">
+                    <div class="next-beep-time">待機中</div>
+                    <div class="current-status"></div>
+                </div>
                 <div class="timer-controls">
                     <button class="start-button">スタート</button>
-                </div>
-                <div class="status-group">
-                    <span class="next-beep-time">待機中</span>
+                    <button class="reset-button">リセット</button>
                 </div>
             </div>
             <div class="timer-item" data-timer-id="2">
                 <div class="timer-name">タイマー 1-2</div>
+                <div class="status-group">
+                    <div class="next-beep-time">待機中</div>
+                    <div class="current-status"></div>
+                </div>
                 <div class="timer-controls">
                     <button class="start-button">スタート</button>
-                </div>
-                <div class="status-group">
-                    <span class="next-beep-time">待機中</span>
+                    <button class="reset-button">リセット</button>
                 </div>
             </div>
             <div class="timer-item" data-timer-id="3">
                 <div class="timer-name">タイマー 1-3</div>
+                <div class="status-group">
+                    <div class="next-beep-time">待機中</div>
+                    <div class="current-status"></div>
+                </div>
                 <div class="timer-controls">
                     <button class="start-button">スタート</button>
-                </div>
-                <div class="status-group">
-                    <span class="next-beep-time">待機中</span>
+                    <button class="reset-button">リセット</button>
                 </div>
             </div>
             <div class="timer-item" data-timer-id="4">
                 <div class="timer-name">タイマー 1-4</div>
+                <div class="status-group">
+                    <div class="next-beep-time">待機中</div>
+                    <div class="current-status"></div>
+                </div>
                 <div class="timer-controls">
                     <button class="start-button">スタート</button>
-                </div>
-                <div class="status-group">
-                    <span class="next-beep-time">待機中</span>
+                    <button class="reset-button">リセット</button>
                 </div>
             </div>
         </section>
 
-        <section class="timer-section" id="feature2-container">
-            <h3>機能2: 繰り返し (10秒/15秒)</h3>
+        <section id="feature2-container" class="timer-section">
+            <h3>機能2：110秒+15秒ループタイマー</h3>
             <div class="timer-item" data-timer-id="6">
+                <div class="next-beep-time">待機中</div>
+                <div class="adjustment-controls">
+                    <button class="adjust-button minus">ー</button>
+                    <div class="adjustment-info"></div>
+                    <button class="adjust-button plus">＋</button>
+                </div>
                 <div class="timer-controls">
                     <button class="start-button">スタート</button>
                     <button class="reset-button">リセット</button>
-                </div>
-                <div class="status-group">
-                    <span class="next-beep-time">待機中</span>
-                </div>
-                <div class="adjustment-controls">
-                    <button class="adjust-button minus">ー</button>
-                    <span class="adjustment-info"></span>
-                    <button class="adjust-button plus">＋</button>
                 </div>
             </div>
         </section>
 
-        <section class="timer-section" id="feature3-container">
-            <h3>機能3: 繰り返し (7.6秒/12.6秒)</h3>
+        <section id="feature3-container" class="timer-section">
+            <h3>機能3：110秒+12.6秒ループタイマー</h3>
             <div class="timer-item" data-timer-id="7">
+                <div class="next-beep-time">待機中</div>
+                <div class="adjustment-controls">
+                    <button class="adjust-button minus">ー</button>
+                    <div class="adjustment-info"></div>
+                    <button class="adjust-button plus">＋</button>
+                </div>
                 <div class="timer-controls">
                     <button class="start-button">スタート</button>
                     <button class="reset-button">リセット</button>
                 </div>
-                <div class="status-group">
-                    <span class="next-beep-time">待機中</span>
-                </div>
-                <div class="adjustment-controls">
-                    <button class="adjust-button minus">ー</button>
-                    <span class="adjustment-info"></span>
-                    <button class="adjust-button plus">＋</button>
-                </div>
             </div>
         </section>
+        
+        <div class="all-reset-container">
+            <button class="all-reset-button">全タイマーリセット</button>
+        </div>
     </main>
     <script src="script.js"></script>
 </body>
