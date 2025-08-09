@@ -42,12 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.startTime = null;
         timer.nextBeepTimes = [];
         timer.updateInterval = null;
-        
-        // 誤差調整もリセット
-        timer.adjustment = 0;
+        timer.adjustment = 0; // 誤差調整をリセット
 
         if (timer.statusElement) {
-            timer.statusElement.textContent = '';
+            timer.statusElement.textContent = '待機中';
         }
         updateNextBeepTime(timer.nextBeepElement, null, timerId);
         if (timer.adjustmentElement) {
@@ -237,6 +235,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 2周目以降のループタイマーを開始
                 const loopInterval = setInterval(() => {
+                    // ループ開始時の警告音を削除
+                    // playBeep();
+                    // updateStatus(timer.statusElement, 'ループ開始！', '#ffc107');
+                    // setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
+                    // console.log(`機能${timerId}: ループ開始。`);
                     
                     // 終了5秒前の警告音
                     timer.timeouts.push(setTimeout(() => {
@@ -375,16 +378,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const minusButton = element.querySelector('.adjust-button.minus');
             const plusButton = element.querySelector('.adjust-button.plus');
             
-            // ボタンの表示と機能を入れ替える
-            if (plusButton) {
-                plusButton.textContent = '＋';
-                plusButton.addEventListener('click', () => adjustTimer(timerId, 1));
-            }
+            // ボタンの表示を入れ替える
             if (minusButton) {
-                minusButton.textContent = 'ー';
-                minusButton.addEventListener('click', () => adjustTimer(timerId, -1));
+                minusButton.textContent = '＋';
+                minusButton.addEventListener('click', () => adjustTimer(timerId, 1));
             }
-
+            if (plusButton) {
+                plusButton.textContent = 'ー';
+                plusButton.addEventListener('click', () => adjustTimer(timerId, -1));
+            }
 
             resetTimer(timerId);
         });
