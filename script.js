@@ -199,7 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function scheduleInitialAndRepeatingBeeps(timerId) {
         const timer = timers?.[timerId];
         if (!timer) return;
-        const now = Date.now();
         const { initialDuration, cycleDuration, beepBeforeEnd } = timer.config;
 
         const initialDurationMs = initialDuration * 1000;
@@ -243,7 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         playBeep();
                         console.log(`機能${timerId}: ループ終了5秒前に警告音が鳴りました。`);
                     }, cycleDurationMs - beepBeforeEndMs));
-
                 }, cycleDurationMs);
                 timer.intervals.push(loopInterval);
             }, cycleDurationMs));
@@ -297,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (remainingInitialMs > 0) {
                  timer.timeouts.push(setTimeout(() => {
                     playBeep();
-                    scheduleRepeatingBeeps(timerId, now);
+                    scheduleRepeatingBeeps(timerId, Date.now());
                  }, remainingInitialMs));
             }
 
