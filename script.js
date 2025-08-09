@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } else if (timerId === 6 || timerId === 7) {
             const initialDurationMs = timer.config.initialDuration * 1000;
-            const cycleDurationMs = timer.config.cycleDuration * 1000;
+            const cycleDurationMs = timer.config.cycleDuration * 1000 + (timer.adjustment * 1000); // 調整値をサイクル時間に反映
             const elapsedMs = now - timer.startTime;
             
             let remainingMs;
@@ -139,17 +139,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function adjustTimer(timerId, amount) {
         const timer = timers?.[timerId];
         if (!timer || (timerId !== 6 && timerId !== 7) || timer.startTime === null) return;
-
+    
         timer.adjustment = parseFloat((timer.adjustment + amount).toFixed(1));
         updateAdjustmentInfo(timer.adjustmentElement, timer.adjustment);
         console.log(`機能${timerId}の誤差調整: ${timer.adjustment.toFixed(1)}s`);
-
+    
         timer.timeouts.forEach(clearTimeout);
         timer.intervals.forEach(clearInterval);
         timer.timeouts = [];
         timer.intervals = [];
 
-        startRepeatingTimer(timerId); // ロジック全体を再実行
+        // 調整ボタンが押されたタイミングからの経過時間で再スケジュール
+        scheduleRepeatingBeeps(timerId);
     }
     
     // ===================================
@@ -166,15 +167,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStatus(timer.statusElement, 'タイマー開始', '#28a745');
         setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
 
-        const beep110Time = timer.startTime + (110 * 1000);
-        timer.nextBeepTimes = [beep110Time];
-
         const timeout1 = setTimeout(() => {
             playBeep();
             updateStatus(timer.statusElement, '105秒経過！', '#ffc107');
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: 105秒後に音が鳴りました。`);
-            timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
         }, 105 * 1000);
 
         const timeout2 = setTimeout(() => {
@@ -182,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStatus(timer.statusElement, '110秒経過！完了。', '#28a745');
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: 110秒後に音が鳴りました。`);
-            timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
             if (timer.updateInterval) {
                  clearInterval(timer.updateInterval);
                  timer.updateInterval = null;
@@ -221,8 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const timer = timers?.[timerId];
         if (!timer) return;
         const now = Date.now();
-        const initialBeep105Time = timer.startTime + (105 * 1000) + (timer.adjustment * 1000);
-        const initialBeep110Time = timer.startTime + (110 * 1000) + (timer.adjustment * 1000);
+        const initialBeep105Time = timer.startTime + (105 * 1000);
+        const initialBeep110Time = timer.startTime + (110 * 1000);
 
         const initialTimeout1 = setTimeout(() => {
             playBeep();
@@ -245,38 +241,49 @@ document.addEventListener('DOMContentLoaded', () => {
         const timer = timers?.[timerId];
         if (!timer) return;
         const now = Date.now();
-        const { initialDuration, cycleDuration, beep1Offset, beep2Offset } = timer.config;
+        const { initialDuration, cycleDuration } = timer.config;
 
-        const adjustedInitialDurationMs = (initialDuration * 1000) + (timer.adjustment * 1000);
-        const adjustedCycleDurationMs = (cycleDuration * 1000) + (timer.adjustment * 1000);
-        const adjustedBeep1OffsetMs = (beep1Offset * 1000) + (timer.adjustment * 1000);
-        const adjustedBeep2OffsetMs = (beep2Offset * 1000) + (timer.adjustment * 1000);
+        const adjustedInitialDurationMs = initialDuration * 1000;
+        const adjustedCycleDurationMs = cycleDuration * 1000 + (timer.adjustment * 1000);
 
         // 最初の110秒タイマー
-        timer.timeouts.push(setTimeout(() => {
+        const initialTimerTimeout = setTimeout(() => {
             // 110秒経過後にループタイマーを開始
-            let nextBeepTime = now + adjustedInitialDurationMs;
+            let nextLoopStart = timer.startTime + adjustedInitialDurationMs;
             
             const loopInterval = setInterval(() => {
                 const now = Date.now();
-                nextBeepTime += adjustedCycleDurationMs;
+                
+                const beep5SecondsBefore = nextLoopStart + adjustedCycleDurationMs - (5 * 1000);
+                const beepAtZero = nextLoopStart + adjustedCycleDurationMs;
 
-                const beep1Time = nextBeepTime - adjustedCycleDurationMs + adjustedBeep1OffsetMs;
-                const beep2Time = nextBeepTime;
+                // 終了5秒前に警告音
+                if (beep5SecondsBefore > now) {
+                    timer.timeouts.push(setTimeout(() => {
+                        playBeep();
+                        updateStatus(timer.statusElement, `終了5秒前！`);
+                        setTimeout(() => updateStatus(timer.statusElement, ''), 1000);
+                        console.log(`機能${timerId}: ループ終了5秒前に音が鳴りました。`);
+                    }, beep5SecondsBefore - now));
+                }
 
-                timer.timeouts.push(setTimeout(() => {
-                    playBeep();
-                }, beep1Time - now));
+                // 終了時に警告音
+                if (beepAtZero > now) {
+                    timer.timeouts.push(setTimeout(() => {
+                        playBeep();
+                        updateStatus(timer.statusElement, `ループ終了！`);
+                        setTimeout(() => updateStatus(timer.statusElement, ''), 1000);
+                        console.log(`機能${timerId}: ループ終了時に音が鳴りました。`);
+                    }, beepAtZero - now));
+                }
 
-                timer.timeouts.push(setTimeout(() => {
-                    playBeep();
-                }, beep2Time - now));
+                nextLoopStart += adjustedCycleDurationMs;
 
             }, adjustedCycleDurationMs);
             timer.intervals.push(loopInterval);
 
-        }, adjustedInitialDurationMs));
-
+        }, adjustedInitialDurationMs);
+        timer.timeouts.push(initialTimerTimeout);
 
         if (timer.updateInterval) clearInterval(timer.updateInterval);
         timer.updateInterval = setInterval(() => {
