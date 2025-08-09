@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.adjustment = 0;
 
         if (timer.statusElement) {
-            timer.statusElement.textContent = '';
+            timer.statusElement.textContent = '待機中';
         }
         updateNextBeepTime(timer.nextBeepElement, null, timerId);
         if (timer.adjustmentElement) {
@@ -374,12 +374,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // ボタンの表示と機能を入れ替える
             if (plusButton) {
-                plusButton.textContent = '＋';
-                plusButton.addEventListener('click', () => adjustTimer(timerId, 1));
+                plusButton.textContent = 'ー';
+                plusButton.addEventListener('click', () => adjustTimer(timerId, -1));
             }
             if (minusButton) {
-                minusButton.textContent = 'ー';
-                minusButton.addEventListener('click', () => adjustTimer(timerId, -1));
+                minusButton.textContent = '＋';
+                minusButton.addEventListener('click', () => adjustTimer(timerId, 1));
             }
 
             resetTimer(timerId);
