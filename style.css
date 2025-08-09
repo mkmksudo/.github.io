@@ -133,6 +133,6 @@ button:hover {
         text-align: center;
     }
     .timer-grid {
-        grid-template-columns: 1fr; /* スマホでは1列表示に */
+        grid-template-columns: 1fr;
     }
 }
