@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const timeout1 = setTimeout(() => {
             playBeep();
-            updateStatus(timer.statusElement, '105秒経過！');
+            updateStatus(timer.statusElement, '105秒経過！', '#ffc107');
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: 105秒後に音が鳴りました。`);
             timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.addEventListener('click', resetAllTimers);
         });
 
-        document.querySelectorAll('.timer-section[data-timer-id]').forEach(element => {
+        document.querySelectorAll('.timer-item').forEach(element => {
             const timerId = parseInt(element.dataset.timerId);
             const timer = timers?.[timerId];
             if (!timer) return;
