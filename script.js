@@ -374,12 +374,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // ボタンの表示と機能を入れ替える
             if (plusButton) {
-                plusButton.textContent = 'ー';
-                plusButton.addEventListener('click', () => adjustTimer(timerId, -1));
+                plusButton.addEventListener('click', () => adjustTimer(timerId, 1));
             }
             if (minusButton) {
-                minusButton.textContent = '＋';
-                minusButton.addEventListener('click', () => adjustTimer(timerId, 1));
+                minusButton.addEventListener('click', () => adjustTimer(timerId, -1));
             }
 
             resetTimer(timerId);
