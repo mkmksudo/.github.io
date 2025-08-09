@@ -61,28 +61,34 @@ main {
     text-align: left;
     font-weight: bold;
     font-size: 1em;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .fixed-timer .timer-controls {
     flex-shrink: 0;
-    margin: 0 15px;
+    margin: 0 10px;
     display: flex;
     align-items: center;
 }
 
 .fixed-timer .status-group {
-    flex-grow: 1;
+    flex-shrink: 0;
     text-align: right;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
     margin-top: 5px;
+    min-width: 0;
 }
 
-/* 「待機中」の文字サイズをさらに小さく */
+/* 「待機中」の文字サイズを調整 */
 .status-group .current-status {
-    font-size: 0.6em; 
+    font-size: 0.7em;
     color: #6c757d;
+    white-space: nowrap;
 }
 
 .timer-item .next-beep-time {
@@ -90,6 +96,7 @@ main {
     font-weight: bold;
     font-size: 2.2em;
     line-height: 1;
+    white-space: nowrap;
 }
 
 /* 機能1のスタートボタンの幅と高さを調整 */
