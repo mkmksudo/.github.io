@@ -79,8 +79,9 @@ main {
     margin-top: 5px;
 }
 
+/* 待機中の文字は小さく、実行中の文字は大きく表示 */
 .timer-item .next-beep-time {
-    font-size: 1.5em; /* 待機中は小さく */
+    font-size: 1.2em; /* 待機中はさらに小さく */
     font-weight: bold;
     line-height: 1;
     color: #6c757d;
