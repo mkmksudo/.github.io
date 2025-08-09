@@ -86,13 +86,10 @@ main {
 }
 
 .timer-item .next-beep-time {
-    font-size: 3em; 
-    font-weight: bold;
-    line-height: 1;
-    color: #6c757d;
-}
-.timer-item.running .next-beep-time {
     color: #007bff;
+    font-weight: bold;
+    font-size: 3em;
+    line-height: 1;
 }
 
 /* 機能1のスタートボタンの幅と高さを調整 */
