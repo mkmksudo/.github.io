@@ -42,6 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.startTime = null;
         timer.nextBeepTimes = [];
         timer.updateInterval = null;
+        
+        // 誤差調整もリセット
+        timer.adjustment = 0;
 
         if (timer.statusElement) {
             timer.statusElement.textContent = '';
@@ -189,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resetTimer(timerId);
 
-        timer.startTime = Date.Gnow();
+        timer.startTime = Date.now();
         updateStatus(timer.statusElement, 'タイマー開始', '#28a745');
         setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
         
@@ -234,11 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 2周目以降のループタイマーを開始
                 const loopInterval = setInterval(() => {
-                    // ループ開始時の警告音を削除
-                    // playBeep();
-                    // updateStatus(timer.statusElement, 'ループ開始！', '#ffc107');
-                    // setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
-                    // console.log(`機能${timerId}: ループ開始。`);
                     
                     // 終了5秒前の警告音
                     timer.timeouts.push(setTimeout(() => {
@@ -375,15 +373,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const minusButton = element.querySelector('.adjust-button.minus');
-            if (minusButton) {
-                minusButton.textContent = 'ー';
-                minusButton.addEventListener('click', () => adjustTimer(timerId, -1));
-            }
             const plusButton = element.querySelector('.adjust-button.plus');
+            
+            // ボタンの表示と機能を入れ替える
             if (plusButton) {
                 plusButton.textContent = '＋';
                 plusButton.addEventListener('click', () => adjustTimer(timerId, 1));
             }
+            if (minusButton) {
+                minusButton.textContent = 'ー';
+                minusButton.addEventListener('click', () => adjustTimer(timerId, -1));
+            }
+
 
             resetTimer(timerId);
         });
