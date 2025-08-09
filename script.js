@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resetTimer(timerId);
 
-        timer.startTime = Date.now();
+        timer.startTime = Date.Gnow();
         updateStatus(timer.statusElement, 'タイマー開始', '#28a745');
         setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
         
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cycleDurationMs = cycleDuration * 1000;
         const beepBeforeEndMs = beepBeforeEnd * 1000;
 
-        // 最初の110秒タイマーの警告音 (5秒前と0秒)
+        // 最初の110秒タイマーの警告音 (5秒前)
         timer.timeouts.push(setTimeout(() => {
             playBeep();
             updateStatus(timer.statusElement, '105秒経過！', '#ffc107');
@@ -214,45 +214,47 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`機能${timerId}: 105秒後に音が鳴りました。`);
         }, initialDurationMs - beepBeforeEndMs));
         
+        // 最初の110秒タイマーの警告音 (0秒)
         timer.timeouts.push(setTimeout(() => {
             playBeep();
             updateStatus(timer.statusElement, '110秒経過！', '#28a745');
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: 110秒後に音が鳴りました。`);
 
-            // 110秒後に最初のループの警告音をスケジュール
+            // 最初のループの警告音 (5秒前)
             timer.timeouts.push(setTimeout(() => {
                 playBeep();
                 console.log(`機能${timerId}: ループ1週目終了5秒前に警告音が鳴りました。`);
             }, cycleDurationMs - beepBeforeEndMs));
             
+            // 最初のループの警告音 (0秒)
             timer.timeouts.push(setTimeout(() => {
                 playBeep();
                 console.log(`機能${timerId}: ループ1週目終了時に警告音が鳴りました。`);
-            }, cycleDurationMs));
-
-
-            // 110秒後に2週目以降のループタイマーを開始
-            const loopInterval = setInterval(() => {
-                playBeep();
-                updateStatus(timer.statusElement, 'ループ開始！', '#ffc107');
-                setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
-                console.log(`機能${timerId}: ループ開始。`);
                 
-                // 終了5秒前の警告音
-                timer.timeouts.push(setTimeout(() => {
-                    playBeep();
-                    console.log(`機能${timerId}: ループ終了5秒前に警告音が鳴りました。`);
-                }, cycleDurationMs - beepBeforeEndMs));
+                // 2周目以降のループタイマーを開始
+                const loopInterval = setInterval(() => {
+                    // ループ開始時の警告音を削除
+                    // playBeep();
+                    // updateStatus(timer.statusElement, 'ループ開始！', '#ffc107');
+                    // setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
+                    // console.log(`機能${timerId}: ループ開始。`);
+                    
+                    // 終了5秒前の警告音
+                    timer.timeouts.push(setTimeout(() => {
+                        playBeep();
+                        console.log(`機能${timerId}: ループ終了5秒前に警告音が鳴りました。`);
+                    }, cycleDurationMs - beepBeforeEndMs));
 
-                // 終了時の警告音
-                timer.timeouts.push(setTimeout(() => {
-                    playBeep();
-                    console.log(`機能${timerId}: ループ終了時に警告音が鳴りました。`);
-                }, cycleDurationMs));
+                    // 終了時の警告音
+                    timer.timeouts.push(setTimeout(() => {
+                        playBeep();
+                        console.log(`機能${timerId}: ループ終了時に警告音が鳴りました。`);
+                    }, cycleDurationMs));
 
-            }, cycleDurationMs);
-            timer.intervals.push(loopInterval);
+                }, cycleDurationMs);
+                timer.intervals.push(loopInterval);
+            }, cycleDurationMs));
 
         }, initialDurationMs));
 
