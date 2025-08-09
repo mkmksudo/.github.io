@@ -38,6 +38,7 @@ main {
     background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: transform 0.2s;
+    margin-bottom: 20px; /* Timer Gridアイテム間のスペース */
 }
 
 .timer-section:hover, .timer-item:hover {
@@ -105,19 +106,31 @@ button:hover {
 }
 
 .all-reset-button {
-    background-color: #95a5a6;
+    background-color: #e74c3c; /* 赤色に変更 */
+    font-size: 1.2em; /* 少し大きく */
+    padding: 10px 20px; /* パディングを調整 */
 }
 
 .all-reset-button:hover {
-    background-color: #7f8c8d;
+    background-color: #c0392b;
 }
 
 .adjust-button {
     background-color: #95a5a6;
-    font-size: 0.8em;
-    padding: 6px 10px;
+    font-size: 1.5em; /* 大きく */
+    padding: 5px 15px; /* パディングを調整 */
 }
 
 .adjust-button:hover {
     background-color: #7f8c8d;
+}
+
+#feature2 .timer-controls,
+#feature3 .timer-controls {
+    justify-content: flex-start; /* ボタンを左寄せ */
+}
+
+#feature2 .adjust-controls,
+#feature3 .adjust-controls {
+    margin-top: 15px; /* 調整ボタンとタイマーコントロールの間のスペース */
 }
