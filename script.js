@@ -43,7 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.nextBeepTimes = [];
         timer.updateInterval = null;
 
-        updateStatus(timer.statusElement, '待機中', '#7f8c8d');
+        if (timer.statusElement) {
+            timer.statusElement.textContent = '';
+        }
         updateNextBeepTime(timer.nextBeepElement, null, timerId);
         if (timer.adjustmentElement) {
             updateAdjustmentInfo(timer.adjustmentElement, timer.adjustment);
@@ -71,7 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const timer = timers?.[timerId];
         if (!timer || timer.startTime === null) {
-            element.textContent = '';
+            element.textContent = '待機中';
+            element.style.color = '#6c757d';
             return;
         }
 
@@ -90,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const seconds = totalSeconds % 60;
                 const formattedMinutes = String(minutes).padStart(2, '0');
                 const formattedSeconds = String(seconds).padStart(2, '0');
-                displayTime = `${formattedMinutes}:${formattedSeconds}`;
+                displayTime = `次まで: ${formattedMinutes}:${formattedSeconds}`;
             }
 
         } else if (timerId === 6 || timerId === 7) {
@@ -104,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
                 const formattedMinutes = String(minutes).padStart(2, '0');
                 const formattedSeconds = String(seconds).padStart(2, '0');
-                displayTime = `${formattedMinutes}:${formattedSeconds}`;
+                displayTime = `次まで: ${formattedMinutes}:${formattedSeconds}`;
             } else {
                  displayTime = '';
             }
@@ -113,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         element.textContent = displayTime;
-        element.style.color = (displayTime === '00:00') ? '#e74c3c' : '#2c3e50';
+        element.style.color = (displayTime === '次まで: 00:00') ? '#dc3545' : '#007bff';
     }
 
 
@@ -123,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 element.textContent = '';
             } else {
                 element.textContent = `誤差調整: ${value.toFixed(1)}s`;
-                element.style.color = (value > 0) ? '#e74c3c' : '#2ecc71';
+                element.style.color = (value > 0) ? '#dc3545' : '#28a745';
             }
         }
     }
@@ -175,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const initialTimeout1 = setTimeout(() => {
             playBeep();
-            updateStatus(timer.statusElement, '105秒経過！', '#f39c12');
+            updateStatus(timer.statusElement, '105秒経過！', '#ffc107');
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: 105秒後に音が鳴りました。`);
             timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -183,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const initialTimeout2 = setTimeout(() => {
             playBeep();
-            updateStatus(timer.statusElement, '110秒経過！', '#3498db');
+            updateStatus(timer.statusElement, '110秒経過！', '#28a745');
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: 110秒後に音が鳴りました。初回完了。`);
             timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -271,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const timeout2 = setTimeout(() => {
             playBeep();
-            updateStatus(timer.statusElement, '110秒経過！完了。', '#2ecc71');
+            updateStatus(timer.statusElement, '110秒経過！完了。', '#28a745');
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: 110秒後に音が鳴りました。`);
             timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -331,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const cycleTimeout1 = setTimeout(() => {
             playBeep();
-            updateStatus(timer.statusElement, `音1鳴動 (サイクルから${beep1Offset}秒)`, '#f39c12');
+            updateStatus(timer.statusElement, `音1鳴動 (サイクルから${beep1Offset}秒)`, '#ffc107');
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: サイクルから${beep1Offset}秒後に音が鳴りました。`);
             timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -339,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const cycleTimeout2 = setTimeout(() => {
             playBeep();
-            updateStatus(timer.statusElement, `音2鳴動 (サイクルから${beep2Offset}秒)`, '#f39c12');
+            updateStatus(timer.statusElement, `音2鳴動 (サイクルから${beep2Offset}秒)`, '#ffc107');
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: サイクルから${beep2Offset}秒後に音が鳴りました。`);
             timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -353,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ページロード時に全てのタイマーの表示を初期化
     function initializeDOM() {
-        const feature1Container = document.getElementById('feature1-container');
+        const feature1Container = document.querySelector('#feature1-container .timer-grid');
         if (feature1Container) {
             feature1Container.innerHTML = '';
             for (let i = 1; i <= 4; i++) {
@@ -361,13 +364,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 timerItem.className = 'timer-item';
                 timerItem.setAttribute('data-timer-id', i);
                 timerItem.innerHTML = `
-                    <h3>タイマー 1-${i}</h3>
+                    <div class="timer-name">タイマー 1-${i}</div>
                     <div class="timer-controls">
                         <button class="start-button">スタート</button>
                     </div>
                     <div class="status-group">
-                        <div class="current-status"></div>
-                        <div class="next-beep-time"></div>
+                        <span class="next-beep-time">待機中</span>
                     </div>
                 `;
                 feature1Container.appendChild(timerItem);
@@ -378,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.addEventListener('click', resetAllTimers);
         });
 
-        document.querySelectorAll('.timer-section, .timer-item').forEach(element => {
+        document.querySelectorAll('.timer-item').forEach(element => {
             const timerId = parseInt(element.dataset.timerId);
             const timer = timers?.[timerId];
             if (!timer) return;
