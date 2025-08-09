@@ -44,32 +44,44 @@ main {
     font-size: 1.2em;
 }
 
-.timer-grid {
+.fixed-timer {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.fixed-timer .timer-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 15px;
+    padding: 0;
+    border: none;
+}
+
+.fixed-timer .timer-info-wrapper {
+    display: flex;
+    align-items: center;
     gap: 10px;
 }
 
-.timer-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.timer-item .timer-name {
+.fixed-timer .timer-name {
     font-weight: bold;
     font-size: 1.2em;
+    flex-shrink: 0;
 }
 
-.timer-item .next-beep-time {
+.fixed-timer .next-beep-time {
     color: #007bff;
     font-weight: bold;
     font-size: 2.2em;
-    text-align: center;
+    text-align: right;
     line-height: 1;
 }
 
@@ -167,24 +179,4 @@ main {
 
 .all-reset-button:hover {
     background-color: #455a64;
-}
-
-/* 機能1のレイアウトを縦一列に戻すための修正 */
-#feature1-container .timer-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-#feature1-container .timer-item {
-    padding: 10px;
-}
-#feature1-container .timer-name {
-    font-size: 1.2em;
-}
-#feature1-container .timer-controls button {
-    padding: 8px 16px;
-    font-size: 1em;
-}
-#feature1-container .next-beep-time {
-    font-size: 2.2em;
 }
