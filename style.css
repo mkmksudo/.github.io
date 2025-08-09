@@ -62,10 +62,15 @@ main {
     font-weight: bold;
     font-size: 1em;
 }
+
+/* 機能1のスタートボタンを修正 */
 .fixed-timer .timer-controls {
     flex-shrink: 0;
     margin: 0 15px;
+    display: flex;
+    align-items: center;
 }
+
 .fixed-timer .status-group {
     flex-grow: 1;
     text-align: right;
