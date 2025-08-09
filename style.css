@@ -79,9 +79,9 @@ main {
     margin-top: 5px;
 }
 
-/* 「待機中」の文字サイズを小さく */
+/* 「待機中」の文字サイズをさらに小さく */
 .status-group .current-status {
-    font-size: 0.7em;
+    font-size: 0.6em; 
     color: #6c757d;
 }
 
