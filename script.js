@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // タイマーのリセット処理をまとめた関数
     function resetTimer(timerId) {
-        const timer = timers[timerId];
+        const timer = timers?.[timerId];
         if (!timer) return;
 
         timer.timeouts.forEach(clearTimeout);
@@ -54,24 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 全タイマーをリセットする関数
     function resetAllTimers() {
         ALL_TIMER_IDS.forEach(id => {
-            const timer = timers[id];
-            if (id !== 6 && id !== 7) {
-                 resetTimer(id);
-            } else {
-                 timer.timeouts.forEach(clearTimeout);
-                 timer.intervals.forEach(clearInterval);
-                 if (timer.updateInterval) {
-                     clearInterval(timer.updateInterval);
-                 }
-                 timer.timeouts = [];
-                 timer.intervals = [];
-                 timer.startTime = null;
-                 timer.nextBeepTimes = [];
-                 timer.updateInterval = null;
-                 updateStatus(timer.statusElement, '待機中', '#7f8c8d');
-                 updateNextBeepTime(timer.nextBeepElement, '', id);
-                 updateAdjustmentInfo(timer.adjustmentElement, timer.adjustment);
-            }
+            resetTimer(id);
         });
         console.log('すべてのタイマーがリセットされました。');
     }
@@ -95,9 +78,18 @@ document.addEventListener('DOMContentLoaded', () => {
         let displayTime = '';
         let targetBeepTime = null;
 
-        const allFutureBeeps = timers[timerId].nextBeepTimes.filter(t => t > now).sort((a,b) => a - b);
-        if (allFutureBeeps.length > 0) {
-            targetBeepTime = allFutureBeeps[0];
+        const timer = timers?.[timerId];
+        if (!timer) return;
+
+        const allFutureBeeps = timer.nextBeepTimes.filter(t => t > now).sort((a,b) => a - b);
+
+        if (timerId >= 1 && timerId <= 4) {
+            const beep110Time = timer.startTime + (110 * 1000);
+            targetBeepTime = beep110Time > now ? beep110Time : null;
+        } else if (timerId === 6 || timerId === 7) {
+            if (allFutureBeeps.length > 0) {
+                targetBeepTime = allFutureBeeps?.[0];
+            }
         }
 
         if (targetBeepTime) {
@@ -134,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function adjustTimer(timerId, amount) {
-        const timer = timers[timerId];
+        const timer = timers?.[timerId];
         if (!timer || (timerId !== 6 && timerId !== 7) || timer.startTime === null) return;
 
         timer.adjustment = parseFloat((timer.adjustment + amount).toFixed(1));
@@ -172,7 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================
 
     function scheduleInitialBeeps(timerId) {
-        const timer = timers[timerId];
+        const timer = timers?.[timerId];
+        if (!timer) return;
         const now = Date.now();
 
         const initialBeep105Time = timer.startTime + (105 * 1000) + (timer.adjustment * 1000);
@@ -189,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const initialTimeout2 = setTimeout(() => {
             playBeep();
-            updateStatus(timer.statusElement, '110秒経過！繰り返し開始。', '#3498db');
+            updateStatus(timer.statusElement, '110秒経過！', '#3498db');
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: 110秒後に音が鳴りました。初回完了。`);
             timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -207,7 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function scheduleRepeatingBeeps(timerId, elapsedSinceAdjustedStart) {
-        const timer = timers[timerId];
+        const timer = timers?.[timerId];
+        if (!timer) return;
         const { cycleDuration, beep1Offset, beep2Offset } = timer.config;
 
         const adjustedCycleDurationMs = (cycleDuration * 1000) + (timer.adjustment * 1000);
@@ -271,7 +265,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startFixedTimer(timerId) {
-        const timer = timers[timerId];
+        const timer = timers?.[timerId];
+        if (!timer) return;
 
         resetTimer(timerId);
 
@@ -313,7 +308,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startRepeatingTimer(timerId) {
-        const timer = timers[timerId];
+        const timer = timers?.[timerId];
+        if (!timer) return;
 
         // 機能3が開始される際は機能2をリセット
         if (timerId === 7) {
@@ -338,7 +334,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function scheduleCycleBeeps(timerId) {
-        const timer = timers[timerId];
+        const timer = timers?.[timerId];
+        if (!timer) return;
         const now = Date.now();
         const { cycleDuration, beep1Offset, beep2Offset } = timer.config;
 
@@ -403,34 +400,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // 機能1, 2, 3の全てのタイマーにイベントリスナーを登録
-        document.querySelectorAll('.timer-section[data-timer-id], .timer-item[data-timer-id]').forEach(element => {
+        document.querySelectorAll('.timer-section, .timer-item').forEach(element => {
             const timerId = parseInt(element.dataset.timerId);
-            const timer = timers[timerId];
+            const timer = timers?.[timerId];
+            if (!timer) return;
             
             timer.sectionElement = element;
             timer.statusElement = element.querySelector('.current-status');
             timer.nextBeepElement = element.querySelector('.next-beep-time');
             timer.adjustmentElement = element.querySelector('.adjustment-info');
 
-            element.querySelector('.start-button').addEventListener('click', () => {
-                if (timerId >= 1 && timerId <= 4) {
-                    startFixedTimer(timerId);
-                } else {
-                    startRepeatingTimer(timerId);
-                }
-            });
+            const startButton = element.querySelector('.start-button');
+            if (startButton) {
+                startButton.addEventListener('click', () => {
+                    if (timerId >= 1 && timerId <= 4) {
+                        startFixedTimer(timerId);
+                    } else {
+                        startRepeatingTimer(timerId);
+                    }
+                });
+            }
 
             const resetButton = element.querySelector('.reset-button');
             if (resetButton) {
                 resetButton.addEventListener('click', () => resetTimer(timerId));
             }
 
-            element.querySelectorAll('.adjust-button.minus').forEach(button => {
-                button.addEventListener('click', () => adjustTimer(timerId, -0.1));
-            });
-            element.querySelectorAll('.adjust-button.plus').forEach(button => {
-                button.addEventListener('click', () => adjustTimer(timerId, 0.1));
-            });
+            const minusButton = element.querySelector('.adjust-button.minus');
+            if (minusButton) {
+                minusButton.textContent = 'ー';
+                minusButton.addEventListener('click', () => adjustTimer(timerId, -0.1));
+            }
+            const plusButton = element.querySelector('.adjust-button.plus');
+            if (plusButton) {
+                plusButton.textContent = '＋';
+                plusButton.addEventListener('click', () => adjustTimer(timerId, 0.1));
+            }
 
             resetTimer(timerId);
         });
