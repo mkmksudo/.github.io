@@ -63,6 +63,7 @@ main {
     font-size: 1em;
 }
 
+/* 機能1のスタートボタンを修正 */
 .fixed-timer .timer-controls {
     flex-shrink: 0;
     margin: 0 15px;
@@ -73,6 +74,12 @@ main {
 .fixed-timer .status-group {
     flex-grow: 1;
     text-align: right;
+}
+
+/* 「待機中」の文字サイズを小さく */
+.status-group .current-status {
+    font-size: 0.8em;
+    color: #6c757d;
 }
 
 .timer-item .next-beep-time {
@@ -197,7 +204,6 @@ main {
     display: flex;
     justify-content: center;
     gap: 10px;
-    z-index: 1; /* z-indexを追加 */
 }
 
 #feature2-container .adjustment-controls,
@@ -211,9 +217,4 @@ main {
 #feature3-container .timer-controls .start-button {
     width: 180px;
     padding: 10px;
-}
-
-/* 機能1の「待機中」を小さく */
-.fixed-timer .current-status {
-    font-size: 0.8em;
 }
