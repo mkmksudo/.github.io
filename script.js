@@ -95,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let displayTime = '';
         let targetBeepTime = null;
 
-        // 次に鳴る音のタイムスタンプを抽出
         const allFutureBeeps = timers[timerId].nextBeepTimes.filter(t => t > now).sort((a,b) => a - b);
         if (allFutureBeeps.length > 0) {
             targetBeepTime = allFutureBeeps[0];
@@ -136,30 +135,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function adjustTimer(timerId, amount) {
         const timer = timers[timerId];
-        if (!timer || (timerId !== 6 && timerId !== 7)) return;
+        if (!timer || (timerId !== 6 && timerId !== 7) || timer.startTime === null) return;
 
         timer.adjustment = parseFloat((timer.adjustment + amount).toFixed(1));
         updateAdjustmentInfo(timer.adjustmentElement, timer.adjustment);
         console.log(`機能${timerId}の誤差調整: ${timer.adjustment.toFixed(1)}s`);
 
-        if (timer.startTime !== null) {
-            timer.timeouts.forEach(clearTimeout);
-            timer.intervals.forEach(clearInterval);
-            timer.timeouts = [];
-            timer.intervals = [];
+        timer.timeouts.forEach(clearTimeout);
+        timer.intervals.forEach(clearInterval);
+        timer.timeouts = [];
+        timer.intervals = [];
 
-            const elapsedSinceOriginalStart = Date.now() - timer.startTime;
-            
-            // 経過時間も調整値を考慮して計算
-            const adjustedStartTime = timer.startTime + (timer.adjustment * 1000);
-            const elapsedSinceAdjustedStart = Date.now() - adjustedStartTime;
+        const elapsedSinceOriginalStart = Date.now() - timer.startTime;
+        
+        // 経過時間も調整値を考慮して計算
+        const adjustedStartTime = timer.startTime + (timer.adjustment * 1000);
+        const elapsedSinceAdjustedStart = Date.now() - adjustedStartTime;
 
-            if (elapsedSinceAdjustedStart < (110 * 1000)) {
-                scheduleInitialBeeps(timerId);
-            } else {
-                scheduleRepeatingBeeps(timerId, elapsedSinceAdjustedStart);
-            }
+        if (elapsedSinceAdjustedStart < (110 * 1000)) {
+            scheduleInitialBeeps(timerId);
+        } else {
+            scheduleRepeatingBeeps(timerId, elapsedSinceAdjustedStart);
         }
+
         // 誤差調整後に表示を即時更新
         if (timer.updateInterval) {
             clearInterval(timer.updateInterval);
@@ -213,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const { cycleDuration, beep1Offset, beep2Offset } = timer.config;
 
         const adjustedCycleDurationMs = (cycleDuration * 1000) + (timer.adjustment * 1000);
-        const currentCycleElapsed = (elapsedSinceAdjustedStart - ((110 * 1000) + (timer.adjustment * 1000))) % adjustedCycleDurationMs;
+        const currentCycleElapsed = (elapsedSinceAdjustedStart - ((110 * 1000))) % adjustedCycleDurationMs;
 
         const now = Date.now();
         const scheduleTimeout = (offset, statusText, logText) => {
