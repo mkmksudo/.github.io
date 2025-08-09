@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-    
+
     function startFixedTimer(timerId) {
         const timer = timers?.[timerId];
         if (!timer) return;
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cycleDurationMs = cycleDuration * 1000;
         const beepBeforeEndMs = beepBeforeEnd * 1000;
 
-        // 最初の110秒タイマーの警告音
+        // 最初の110秒タイマーの警告音 (5秒前と0秒)
         timer.timeouts.push(setTimeout(() => {
             playBeep();
             updateStatus(timer.statusElement, '105秒経過！', '#ffc107');
@@ -220,7 +220,19 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: 110秒後に音が鳴りました。`);
 
-            // 110秒後にループタイマーを開始
+            // 110秒後に最初のループの警告音をスケジュール
+            timer.timeouts.push(setTimeout(() => {
+                playBeep();
+                console.log(`機能${timerId}: ループ1週目終了5秒前に警告音が鳴りました。`);
+            }, cycleDurationMs - beepBeforeEndMs));
+            
+            timer.timeouts.push(setTimeout(() => {
+                playBeep();
+                console.log(`機能${timerId}: ループ1週目終了時に警告音が鳴りました。`);
+            }, cycleDurationMs));
+
+
+            // 110秒後に2週目以降のループタイマーを開始
             const loopInterval = setInterval(() => {
                 playBeep();
                 updateStatus(timer.statusElement, 'ループ開始！', '#ffc107');
@@ -363,12 +375,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const minusButton = element.querySelector('.adjust-button.minus');
             if (minusButton) {
                 minusButton.textContent = 'ー';
-                minusButton.addEventListener('click', () => adjustTimer(timerId, -1)); // 調整量を-1秒に修正
+                minusButton.addEventListener('click', () => adjustTimer(timerId, -1));
             }
             const plusButton = element.querySelector('.adjust-button.plus');
             if (plusButton) {
                 plusButton.textContent = '＋';
-                plusButton.addEventListener('click', () => adjustTimer(timerId, 1)); // 調整量を+1秒に修正
+                plusButton.addEventListener('click', () => adjustTimer(timerId, 1));
             }
 
             resetTimer(timerId);
