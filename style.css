@@ -44,44 +44,46 @@ main {
     font-size: 1.2em;
 }
 
-.fixed-timer {
+/* 機能1の各タイマーアイテムのスタイル */
+.fixed-timer .timer-item {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 5px 15px;
+    flex-direction: row; /* 要素を横並びにする */
+    justify-content: space-between; /* 左右に要素を広げる */
+    align-items: center; /* 垂直方向の中央揃え */
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     margin-bottom: 10px;
 }
 
-.fixed-timer .timer-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    gap: 15px;
-    padding: 0;
-    border: none;
+.fixed-timer .timer-name,
+.fixed-timer .timer-controls,
+.fixed-timer .status-group {
+    flex-grow: 1;
+    flex-basis: 0; /* 均等に幅を割り当てるための設定 */
+    text-align: center;
 }
-
-.fixed-timer .timer-info-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.fixed-timer .timer-controls {
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0 10px;
 }
-
+.fixed-timer .status-group {
+    text-align: right;
+}
 .fixed-timer .timer-name {
+    text-align: left;
+}
+
+.timer-item .timer-name {
     font-weight: bold;
     font-size: 1.2em;
-    flex-shrink: 0;
 }
 
-.fixed-timer .next-beep-time {
+.timer-item .next-beep-time {
     color: #007bff;
     font-weight: bold;
     font-size: 2.2em;
-    text-align: right;
     line-height: 1;
 }
 
