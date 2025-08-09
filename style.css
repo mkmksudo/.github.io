@@ -56,41 +56,43 @@ main {
     margin-bottom: 10px;
 }
 
-.fixed-timer .timer-name,
-.fixed-timer .timer-controls,
-.fixed-timer .status-group {
-    flex-grow: 1;
-    flex-basis: 0; /* 均等に幅を割り当てるための設定 */
-    text-align: center;
+.fixed-timer .timer-info-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
-.fixed-timer .timer-controls {
-    flex-grow: 0;
-    flex-shrink: 0;
-    margin: 0 10px;
-}
-.fixed-timer .status-group {
-    text-align: right;
-}
+
 .fixed-timer .timer-name {
+    font-weight: bold;
+    font-size: 1.2em;
+    flex-shrink: 0;
     text-align: left;
 }
 
-.timer-item .timer-name {
-    font-weight: bold;
-    font-size: 1.2em;
-}
-
-.timer-item .next-beep-time {
+.fixed-timer .next-beep-time {
     color: #007bff;
     font-weight: bold;
     font-size: 2.2em;
+    text-align: right;
     line-height: 1;
 }
 
-.timer-controls {
+/* スタートボタンの縦書きスタイル */
+.timer-controls .start-button.vertical {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    padding: 10px 5px;
+    min-height: 80px;
+}
+
+
+/* 機能2・3のボタンを横並びにする */
+#feature2-container .timer-controls,
+#feature3-container .timer-controls {
     display: flex;
-    gap: 10px;
     justify-content: center;
+    gap: 10px;
 }
 
 .timer-controls button {
@@ -111,18 +113,18 @@ main {
 }
 
 .timer-controls .reset-button {
-    background-color: #dc3545;
+    background-color: #007bff;
 }
 
 .timer-controls .reset-button:hover {
-    background-color: #c82333;
+    background-color: #0056b3;
 }
+
 
 .status-group {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 5px;
 }
 
 .current-status {
