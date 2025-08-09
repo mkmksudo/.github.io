@@ -77,33 +77,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const now = Date.now();
         let displayTime = '';
-        let targetBeepTime = null;
+        
+        // **修正箇所**: 機能1、機能2、機能3で表示する時間を分ける
+        if (timerId >= 1 && timerId <= 4) { // 機能1のタイマー
+            const beep110Time = timer.startTime + (110 * 1000);
+            const remainingMs = beep110Time - now;
 
-        const allFutureBeeps = timer.nextBeepTimes.filter(t => t > now).sort((a,b) => a - b);
-        if (allFutureBeeps.length > 0) {
-            targetBeepTime = allFutureBeeps[0];
-        }
-
-        if (targetBeepTime) {
-            const remainingMs = targetBeepTime - now;
-            const totalSeconds = Math.ceil(remainingMs / 1000);
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-    
-            const formattedMinutes = String(minutes).padStart(2, '0');
-            const formattedSeconds = String(seconds).padStart(2, '0');
-            displayTime = `${formattedMinutes}:${formattedSeconds}`;
-    
             if (remainingMs <= 0) {
                 displayTime = '00:00';
-                element.style.color = '#000000';
             } else {
-                element.style.color = '#000000';
+                const totalSeconds = Math.ceil(remainingMs / 1000);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                const formattedMinutes = String(minutes).padStart(2, '0');
+                const formattedSeconds = String(seconds).padStart(2, '0');
+                displayTime = `${formattedMinutes}:${formattedSeconds}`;
+            }
+
+        } else if (timerId === 6 || timerId === 7) { // 機能2, 3のタイマー
+            const allFutureBeeps = timer.nextBeepTimes.filter(t => t > now).sort((a,b) => a - b);
+            if (allFutureBeeps.length > 0) {
+                const targetBeepTime = allFutureBeeps[0];
+                const remainingMs = targetBeepTime - now;
+                const totalSeconds = Math.ceil(remainingMs / 1000);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+        
+                const formattedMinutes = String(minutes).padStart(2, '0');
+                const formattedSeconds = String(seconds).padStart(2, '0');
+                displayTime = `${formattedMinutes}:${formattedSeconds}`;
+            } else {
+                 displayTime = '';
             }
         } else {
             displayTime = '';
         }
+        
         element.textContent = displayTime;
+        element.style.color = (displayTime === '00:00') ? '#e74c3c' : '#2c3e50';
     }
 
 
@@ -146,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timer.updateInterval);
         }
         timer.updateInterval = setInterval(() => {
-            updateNextBeepTime(timer.nextBeepElement, '', timerId);
+            updateNextBeepTime(timer.nextBeepElement, null, timerId);
         }, 1000);
     }
     
@@ -165,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const initialTimeout1 = setTimeout(() => {
             playBeep();
-            updateStatus(timer.statusElement, '105秒経過！', '#3498db');
+            updateStatus(timer.statusElement, '105秒経過！', '#f39c12');
             setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
             console.log(`機能${timerId}: 105秒後に音が鳴りました。`);
             timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
@@ -229,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (timer.updateInterval) clearInterval(timer.updateInterval);
         timer.updateInterval = setInterval(() => {
-            updateNextBeepTime(timer.nextBeepElement, '', timerId);
+            updateNextBeepTime(timer.nextBeepElement, null, timerId);
         }, 1000);
 
         const intervalId = setInterval(() => {
@@ -248,9 +259,9 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStatus(timer.statusElement, 'タイマーを開始しました。');
         setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
 
-        const beep105Time = timer.startTime + (105 * 1000);
+        // 機能1は110秒後の時間のみを表示
         const beep110Time = timer.startTime + (110 * 1000);
-        timer.nextBeepTimes = [beep105Time, beep110Time].sort((a, b) => a - b);
+        timer.nextBeepTimes = [beep110Time];
 
         const timeout1 = setTimeout(() => {
             playBeep();
@@ -276,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.timeouts.push(timeout1, timeout2);
 
         timer.updateInterval = setInterval(() => {
-            updateNextBeepTime(timer.nextBeepElement, '', timerId);
+            updateNextBeepTime(timer.nextBeepElement, null, timerId);
         }, 1000);
     }
 
@@ -284,10 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const timer = timers?.[timerId];
         if (!timer) return;
 
-        // **修正済み**：機能3の開始で機能2をリセットするロジック
         if (timerId === 7) {
             resetTimer(6);
-        } else if (timerId === 6) { // 機能2の開始で機能3をリセット
+        } else if (timerId === 6) {
             resetTimer(7);
         }
 
@@ -300,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scheduleInitialBeeps(timerId);
 
         timer.updateInterval = setInterval(() => {
-            updateNextBeepTime(timer.nextBeepElement, '', timerId);
+            updateNextBeepTime(timer.nextBeepElement, null, timerId);
         }, 1000);
 
         updateAdjustmentInfo(timer.adjustmentElement, timer.adjustment);
