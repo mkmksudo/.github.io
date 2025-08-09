@@ -79,17 +79,15 @@ main {
     margin-top: 5px;
 }
 
-/* 「待機中」の文字サイズをさらに小さく */
-.status-group .current-status {
-    font-size: 0.6em; 
+.timer-item .next-beep-time {
+    font-size: 1.5em; /* 待機中は小さく */
+    font-weight: bold;
+    line-height: 1;
     color: #6c757d;
 }
-
-.timer-item .next-beep-time {
+.timer-item.running .next-beep-time {
+    font-size: 3em; /* 実行中は大きく */
     color: #007bff;
-    font-weight: bold;
-    font-size: 3em;
-    line-height: 1;
 }
 
 /* 機能1のスタートボタンの幅と高さを調整 */
