@@ -61,6 +61,10 @@ main {
     text-align: left;
     font-weight: bold;
     font-size: 1em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .fixed-timer .timer-controls {
@@ -81,7 +85,7 @@ main {
 
 /* 「待機中」の文字サイズをさらに小さく */
 .status-group .current-status {
-    font-size: 0.6em; 
+    font-size: 0.7em;
     color: #6c757d;
 }
 
