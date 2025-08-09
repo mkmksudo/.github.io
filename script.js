@@ -79,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let displayTime = '';
         let targetBeepTime = null;
 
-        // 次のビープ音までの時間を正しく計算するために、今後のビープ音の中で最も近いものを探す
         const allFutureBeeps = timer.nextBeepTimes.filter(t => t > now).sort((a,b) => a - b);
         if (allFutureBeeps.length > 0) {
             targetBeepTime = allFutureBeeps[0];
@@ -179,7 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`機能${timerId}: 110秒後に音が鳴りました。初回完了。`);
             timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
 
-            // 110秒後に繰り返しサイクルを開始
             scheduleCycleBeeps(timerId);
 
             const intervalId = setInterval(() => {
@@ -215,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const adjustedBeep1OffsetMs = (beep1Offset * 1000) + (timer.adjustment * 1000);
         const adjustedBeep2OffsetMs = (beep2Offset * 1000) + (timer.adjustment * 1000);
 
-        // 繰り返しサイクルの開始時刻を再計算
         const adjustedStartOfRepeat = timer.startTime + (110 * 1000) + (timer.adjustment * 1000);
         const elapsedSinceRepeatStart = now - adjustedStartOfRepeat;
         const cycleNumber = Math.floor(elapsedSinceRepeatStart / adjustedCycleDurationMs);
@@ -227,7 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.nextBeepTimes.push(nextBeep1Time, nextBeep2Time);
         timer.nextBeepTimes.sort((a,b) => a - b);
         
-        // 再スケジュール
         scheduleTimeout(nextBeep1Time - now, `音1鳴動 (サイクルから${beep1Offset}秒)`, `機能${timerId}: サイクルから${beep1Offset}秒後に音が鳴りました。`);
         scheduleTimeout(nextBeep2Time - now, `音2鳴動 (サイクルから${beep2Offset}秒)`, `機能${timerId}: サイクルから${beep2Offset}秒後に音が鳴りました。`);
 
@@ -288,10 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const timer = timers?.[timerId];
         if (!timer) return;
 
-        // **修正箇所**: 機能3が開始された際に機能2をリセットするロジック
+        // **修正済み**：機能3の開始で機能2をリセットするロジック
         if (timerId === 7) {
             resetTimer(6);
-        } else if (timerId === 6) { // 機能2が開始された際に機能3をリセットするロジック
+        } else if (timerId === 6) { // 機能2の開始で機能3をリセット
             resetTimer(7);
         }
 
