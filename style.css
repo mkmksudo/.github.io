@@ -50,10 +50,10 @@ main {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 5px; /* 余白を狭く */
     border: 1px solid #ddd;
     border-radius: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 5px; /* 余白を狭く */
 }
 
 .fixed-timer .timer-name {
@@ -63,7 +63,6 @@ main {
     font-size: 1em;
 }
 
-/* 機能1のスタートボタンを修正 */
 .fixed-timer .timer-controls {
     flex-shrink: 0;
     margin: 0 15px;
@@ -79,13 +78,13 @@ main {
 .timer-item .next-beep-time {
     color: #007bff;
     font-weight: bold;
-    font-size: 1.8em;
+    font-size: 2.2em; /* 時間を大きく */
     line-height: 1;
 }
 
-/* 機能1のスタートボタンの幅を調整 */
+/* 機能1のスタートボタンの幅と高さを調整 */
 .timer-controls .start-button {
-    padding: 20px 10px;
+    padding: 10px 10px; /* 縦幅を狭く */
     width: 100px;
     border: none;
     border-radius: 5px;
