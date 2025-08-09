@@ -78,10 +78,10 @@ main {
     line-height: 1;
 }
 
-/* スタートボタンの幅をさらに広げる */
+/* 機能1のスタートボタンの幅を調整 */
 .timer-controls .start-button {
     padding: 20px 10px;
-    width: 180px;
+    width: 100px; /* 狭くする */
     border: none;
     border-radius: 5px;
     color: white;
@@ -176,8 +176,22 @@ main {
 .all-reset-button:hover {
     background-color: #455a64;
 }
+
 /* 機能2と3のスタートボタンを中央寄せにする */
 #feature2-container .timer-controls,
 #feature3-container .timer-controls {
+    display: flex;
+    flex-direction: column; /* ボタンを縦に並べる */
+    align-items: center; /* 中央に配置 */
+    gap: 10px;
+}
+#feature2-container .timer-item,
+#feature3-container .timer-item {
+    flex-direction: column;
     justify-content: center;
+}
+#feature2-container .timer-controls .start-button,
+#feature3-container .timer-controls .start-button {
+    width: 180px;
+    padding: 10px;
 }
