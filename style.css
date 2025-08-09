@@ -3,13 +3,13 @@ body {
     background-color: #f0f2f5;
     color: #333;
     margin: 0;
-    padding: 20px;
+    padding: 10px;
     font-size: 1.1em;
     text-align: center;
 }
 
 header {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 header h1 {
@@ -45,9 +45,10 @@ main {
 }
 
 .timer-grid {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+    align-items: center;
 }
 
 .timer-item {
@@ -68,9 +69,9 @@ main {
 .timer-item .next-beep-time {
     color: #007bff;
     font-weight: bold;
-    font-size: 1.4em;
-    min-width: 120px;
+    font-size: 2.2em;
     text-align: center;
+    line-height: 1;
 }
 
 .timer-controls {
@@ -151,7 +152,7 @@ main {
 
 .all-reset-container {
     text-align: center;
-    margin: 10px 0 20px 0;
+    margin: 5px 0 15px 0;
 }
 
 .all-reset-button {
@@ -167,4 +168,31 @@ main {
 
 .all-reset-button:hover {
     background-color: #455a64;
+}
+
+/* 4個のタイマーを横並びにするための調整 */
+#feature1-container .timer-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+}
+#feature1-container .timer-item {
+    padding: 5px;
+}
+#feature1-container .timer-name {
+    font-size: 0.9em;
+}
+#feature1-container .timer-controls button {
+    padding: 6px 12px;
+    font-size: 0.8em;
+}
+#feature1-container .next-beep-time {
+    font-size: 1.4em;
+}
+
+/* スマートフォン対応 */
+@media (max-width: 600px) {
+    #feature1-container .timer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
 }
