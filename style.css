@@ -81,7 +81,7 @@ main {
 /* スタートボタンを縦長にする */
 .timer-controls .start-button {
     padding: 20px 10px; /* 縦幅を大きく */
-    width: 50px;
+    width: 60px; /* ボタンの幅を広げる */
     border: none;
     border-radius: 5px;
     color: white;
@@ -91,6 +91,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 .timer-controls .start-button:hover {
