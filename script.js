@@ -69,7 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateNextBeepTime(element, nextBeepTimestamp, timerId) {
         if (!element) return;
 
-        if (nextBeepTimestamp === '') {
+        const timer = timers?.[timerId];
+        if (!timer || timer.startTime === null) {
             element.textContent = '';
             return;
         }
@@ -78,30 +79,28 @@ document.addEventListener('DOMContentLoaded', () => {
         let displayTime = '';
         let targetBeepTime = null;
 
-        const timer = timers?.[timerId];
-        if (!timer) return;
-
-        const allFutureBeeps = timer.nextBeepTimes.filter(t => t > now).sort((a,b) => a - b);
-
         if (timerId >= 1 && timerId <= 4) {
             const beep110Time = timer.startTime + (110 * 1000);
             targetBeepTime = beep110Time > now ? beep110Time : null;
         } else if (timerId === 6 || timerId === 7) {
+            const allFutureBeeps = timer.nextBeepTimes.filter(t => t > now).sort((a,b) => a - b);
             if (allFutureBeeps.length > 0) {
-                targetBeepTime = allFutureBeeps?.[0];
+                targetBeepTime = allFutureBeeps[0];
+            } else {
+                targetBeepTime = null;
             }
         }
-
+        
         if (targetBeepTime) {
             const remainingMs = targetBeepTime - now;
             const totalSeconds = Math.ceil(remainingMs / 1000);
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = totalSeconds % 60;
-
+    
             const formattedMinutes = String(minutes).padStart(2, '0');
             const formattedSeconds = String(seconds).padStart(2, '0');
             displayTime = `${formattedMinutes}:${formattedSeconds}`;
-
+    
             if (remainingMs <= 0) {
                 displayTime = '00:00';
                 element.style.color = '#000000';
@@ -140,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const elapsedSinceOriginalStart = Date.now() - timer.startTime;
         
-        // 経過時間も調整値を考慮して計算
         const adjustedStartTime = timer.startTime + (timer.adjustment * 1000);
         const elapsedSinceAdjustedStart = Date.now() - adjustedStartTime;
 
@@ -150,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
             scheduleRepeatingBeeps(timerId, elapsedSinceAdjustedStart);
         }
 
-        // 誤差調整後に表示を即時更新
         if (timer.updateInterval) {
             clearInterval(timer.updateInterval);
         }
