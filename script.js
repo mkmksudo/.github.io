@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.adjustment = 0;
 
         if (timer.statusElement) {
-            timer.statusElement.textContent = '待機中';
+            timer.statusElement.textContent = '';
         }
         updateNextBeepTime(timer.nextBeepElement, null, timerId);
         if (timer.adjustmentElement) {
@@ -369,15 +369,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 resetButton.addEventListener('click', () => resetTimer(timerId));
             }
 
-            const plusButton = element.querySelector('.adjust-button.plus');
             const minusButton = element.querySelector('.adjust-button.minus');
+            const plusButton = element.querySelector('.adjust-button.plus');
             
-            // ボタンの表示と機能を入れ替える
-            if (plusButton) {
-                plusButton.addEventListener('click', () => adjustTimer(timerId, 1));
-            }
+            // ボタンの表示を入れ替える
             if (minusButton) {
-                minusButton.addEventListener('click', () => adjustTimer(timerId, -1));
+                minusButton.textContent = '＋';
+                minusButton.addEventListener('click', () => adjustTimer(timerId, 1));
+            }
+            if (plusButton) {
+                plusButton.textContent = 'ー';
+                plusButton.addEventListener('click', () => adjustTimer(timerId, -1));
             }
 
             resetTimer(timerId);
