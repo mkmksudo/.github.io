@@ -60,7 +60,7 @@ main {
     flex-grow: 1;
     text-align: left;
     font-weight: bold;
-    font-size: 1em; /* タイマー名を小さくする */
+    font-size: 1em;
 }
 .fixed-timer .timer-controls {
     flex-shrink: 0;
@@ -74,7 +74,7 @@ main {
 .timer-item .next-beep-time {
     color: #007bff;
     font-weight: bold;
-    font-size: 1.8em; /* 時間を小さくする */
+    font-size: 1.8em;
     line-height: 1;
 }
 
@@ -110,12 +110,6 @@ main {
 
 .timer-controls .reset-button:hover {
     background-color: #c82333;
-}
-
-/* 機能2と3のボタンを中央寄せにする */
-#feature2-container .timer-controls,
-#feature3-container .timer-controls {
-    justify-content: center;
 }
 
 .status-group {
@@ -181,4 +175,9 @@ main {
 
 .all-reset-button:hover {
     background-color: #455a64;
+}
+/* 機能2と3のスタートボタンを中央寄せにする */
+#feature2-container .timer-controls,
+#feature3-container .timer-controls {
+    justify-content: center;
 }
