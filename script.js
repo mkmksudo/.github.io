@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
         3: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
         4: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null },
         // 機能2, 3
-        6: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null, adjustment: 0, adjustmentElement: null, config: { cycleDuration: 15, beep1Offset: 10, beep2Offset: 15 } },
-        7: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null, adjustment: 0, adjustmentElement: null, config: { cycleDuration: 12.6, beep1Offset: 7.6, beep2Offset: 12.6 } }
+        6: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null, adjustment: 0, adjustmentElement: null, config: { initialDuration: 110, cycleDuration: 15, beep1Offset: 10, beep2Offset: 15 } },
+        7: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null, adjustment: 0, adjustmentElement: null, config: { initialDuration: 110, cycleDuration: 12.6, beep1Offset: 7.6, beep2Offset: 12.6 } }
     };
     
     // ===================================
@@ -97,20 +97,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
         } else if (timerId === 6 || timerId === 7) {
-            const allFutureBeeps = timer.nextBeepTimes.filter(t => t > now).sort((a,b) => a - b);
-            if (allFutureBeeps.length > 0) {
-                const targetBeepTime = allFutureBeeps[0];
-                const remainingMs = targetBeepTime - now;
-                const totalSeconds = Math.ceil(remainingMs / 1000);
-                const minutes = Math.floor(totalSeconds / 60);
-                const seconds = totalSeconds % 60;
-        
-                const formattedMinutes = String(minutes).padStart(2, '0');
-                const formattedSeconds = String(seconds).padStart(2, '0');
-                displayTime = `${formattedMinutes}:${formattedSeconds}`;
+            const initialDurationMs = timer.config.initialDuration * 1000;
+            const cycleDurationMs = timer.config.cycleDuration * 1000;
+            const elapsedMs = now - timer.startTime;
+            
+            let remainingMs;
+            if (elapsedMs < initialDurationMs) {
+                remainingMs = initialDurationMs - elapsedMs;
             } else {
-                 displayTime = '';
+                const elapsedSinceCycleStart = elapsedMs - initialDurationMs;
+                remainingMs = cycleDurationMs - (elapsedSinceCycleStart % cycleDurationMs);
             }
+            
+            const totalSeconds = Math.ceil(remainingMs / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const formattedSeconds = String(seconds).padStart(2, '0');
+            displayTime = `${formattedMinutes}:${formattedSeconds}`;
         } else {
             displayTime = '';
         }
@@ -144,23 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.timeouts = [];
         timer.intervals = [];
 
-        const elapsedSinceOriginalStart = Date.now() - timer.startTime;
-        
-        const adjustedStartTime = timer.startTime + (timer.adjustment * 1000);
-        const elapsedSinceAdjustedStart = Date.now() - adjustedStartTime;
-
-        if (elapsedSinceAdjustedStart < (110 * 1000)) {
-            scheduleInitialBeeps(timerId);
-        } else {
-            scheduleRepeatingBeeps(timerId, elapsedSinceAdjustedStart);
-        }
-
-        if (timer.updateInterval) {
-            clearInterval(timer.updateInterval);
-        }
-        timer.updateInterval = setInterval(() => {
-            updateNextBeepTime(timer.nextBeepElement, null, timerId);
-        }, 1000);
+        startRepeatingTimer(timerId); // ロジック全体を再実行
     }
     
     // ===================================
@@ -225,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
         
         scheduleInitialBeeps(timerId);
-        scheduleRepeatingBeeps(timerId, 0);
+        scheduleRepeatingBeeps(timerId);
     }
 
     function scheduleInitialBeeps(timerId) {
@@ -252,59 +241,47 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.timeouts.push(initialTimeout1, initialTimeout2);
     }
 
-    function scheduleRepeatingBeeps(timerId, elapsedSinceAdjustedStart) {
+    function scheduleRepeatingBeeps(timerId) {
         const timer = timers?.[timerId];
         if (!timer) return;
         const now = Date.now();
-        const { cycleDuration, beep1Offset, beep2Offset } = timer.config;
+        const { initialDuration, cycleDuration, beep1Offset, beep2Offset } = timer.config;
 
+        const adjustedInitialDurationMs = (initialDuration * 1000) + (timer.adjustment * 1000);
         const adjustedCycleDurationMs = (cycleDuration * 1000) + (timer.adjustment * 1000);
-        const scheduleTimeout = (offset, statusText, logText) => {
-            if (offset > 0) {
-                const timeoutId = setTimeout(() => {
-                    playBeep();
-                    updateStatus(timer.statusElement, statusText);
-                    setTimeout(() => updateStatus(timer.statusElement, ''), 1000);
-                    console.log(logText);
-                }, offset);
-                timer.timeouts.push(timeoutId);
-            }
-        };
-
-        timer.nextBeepTimes = [];
         const adjustedBeep1OffsetMs = (beep1Offset * 1000) + (timer.adjustment * 1000);
         const adjustedBeep2OffsetMs = (beep2Offset * 1000) + (timer.adjustment * 1000);
 
-        const adjustedStartOfRepeat = timer.startTime + (110 * 1000) + (timer.adjustment * 1000);
-        const elapsedSinceRepeatStart = now - adjustedStartOfRepeat;
-        
-        let nextBeep1Time, nextBeep2Time;
+        // 最初の110秒タイマー
+        timer.timeouts.push(setTimeout(() => {
+            // 110秒経過後にループタイマーを開始
+            let nextBeepTime = now + adjustedInitialDurationMs;
+            
+            const loopInterval = setInterval(() => {
+                const now = Date.now();
+                nextBeepTime += adjustedCycleDurationMs;
 
-        if (elapsedSinceRepeatStart <= 0) {
-            nextBeep1Time = adjustedStartOfRepeat + adjustedBeep1OffsetMs;
-            nextBeep2Time = adjustedStartOfRepeat + adjustedBeep2OffsetMs;
-        } else {
-            const cycleNumber = Math.floor(elapsedSinceRepeatStart / adjustedCycleDurationMs);
-            const nextCycleStart = adjustedStartOfRepeat + (cycleNumber + 1) * adjustedCycleDurationMs;
-            nextBeep1Time = nextCycleStart + adjustedBeep1OffsetMs - adjustedCycleDurationMs;
-            nextBeep2Time = nextCycleStart + adjustedBeep2OffsetMs - adjustedCycleDurationMs;
-        }
+                const beep1Time = nextBeepTime - adjustedCycleDurationMs + adjustedBeep1OffsetMs;
+                const beep2Time = nextBeepTime;
 
-        timer.nextBeepTimes.push(nextBeep1Time, nextBeep2Time);
-        timer.nextBeepTimes.sort((a,b) => a - b);
-        
-        scheduleTimeout(nextBeep1Time - now, `音1鳴動`, `機能${timerId}: サイクルから${beep1Offset}秒後に音が鳴りました。`);
-        scheduleTimeout(nextBeep2Time - now, `音2鳴動`, `機能${timerId}: サイクルから${beep2Offset}秒後に音が鳴りました。`);
+                timer.timeouts.push(setTimeout(() => {
+                    playBeep();
+                }, beep1Time - now));
+
+                timer.timeouts.push(setTimeout(() => {
+                    playBeep();
+                }, beep2Time - now));
+
+            }, adjustedCycleDurationMs);
+            timer.intervals.push(loopInterval);
+
+        }, adjustedInitialDurationMs));
+
 
         if (timer.updateInterval) clearInterval(timer.updateInterval);
         timer.updateInterval = setInterval(() => {
             updateNextBeepTime(timer.nextBeepElement, null, timerId);
         }, 1000);
-
-        const intervalId = setInterval(() => {
-            scheduleRepeatingBeeps(timerId);
-        }, adjustedCycleDurationMs);
-        timer.intervals.push(intervalId);
     }
     
     // ===================================
