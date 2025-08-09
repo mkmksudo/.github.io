@@ -1,52 +1,54 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>サファイアタイマー(ぱおん)</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>サファイアタイマー(ぱおん)</h1>
-
-    <div class="all-reset-container">
-        <button class="all-reset-button">全タイマーをリセット</button>
-    </div>
-
-    <div class="timer-section" id="feature1-container">
-        <h2>コールサファイア</h2>
-    </div>
-
-    <div class="timer-section" data-timer-id="6">
-        <h2>スクランブル</h2>
-        <div class="status-display-container">
-            <div class="current-status"></div>
-            <div class="next-beep-time"></div>
-            <div class="adjustment-info"></div>
-        </div>
-        <div class="timer-controls">
-            <button class="adjust-button minus">ー</button>
-            <button class="start-button">スタート</button>
-            <button class="adjust-button plus">＋</button>
-            <button class="reset-button">リセット</button>
-        </div>
-    </div>
-
-    <div class="timer-section" data-timer-id="7">
-        <h2>ブリリアント</h2>
-        <div class="status-display-container">
-            <div class="current-status"></div>
-            <div class="next-beep-time"></div>
-            <div class="adjustment-info"></div>
-        </div>
-        <div class="timer-controls">
-            <button class="adjust-button minus">ー</button>
-            <button class="start-button">スタート</button>
-            <button class="adjust-button plus">＋</button>
-            <button class="reset-button">リセット</button>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+<style>
+    /* CSS for timers (add this to your existing CSS or <style> tag) */
+    .timer-section, .timer-item {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .timer-section h3, .timer-item h3 {
+        margin-top: 0;
+        color: #333;
+    }
+    .timer-controls, .status-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .status-group {
+        flex-direction: column;
+        align-items: flex-start;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .current-status {
+        font-size: 0.8em;
+        color: #3498db;
+    }
+    .next-beep-time {
+        font-size: 1.5em;
+        color: #2c3e50;
+    }
+    .adjustment-info {
+        font-size: 0.8em;
+        margin-top: 5px;
+    }
+    button {
+        padding: 8px 16px;
+        font-size: 1em;
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        background-color: #3498db;
+    }
+    .reset-button {
+        background-color: #e74c3c;
+    }
+    .adjust-button {
+        background-color: #95a5a6;
+    }
+</style>
