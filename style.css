@@ -60,7 +60,7 @@ main {
     flex-grow: 1;
     text-align: left;
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 1em; /* タイマー名を小さくする */
 }
 .fixed-timer .timer-controls {
     flex-shrink: 0;
@@ -74,7 +74,7 @@ main {
 .timer-item .next-beep-time {
     color: #007bff;
     font-weight: bold;
-    font-size: 2.2em;
+    font-size: 1.8em; /* 時間を小さくする */
     line-height: 1;
 }
 
