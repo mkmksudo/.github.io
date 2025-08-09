@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.adjustment = 0; // 誤差調整をリセット
 
         if (timer.statusElement) {
-            timer.statusElement.textContent = '';
+            timer.statusElement.textContent = '待機中';
         }
         updateNextBeepTime(timer.nextBeepElement, null, timerId);
         if (timer.adjustmentElement) {
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resetTimer(timerId);
 
-        timer.startTime = Date.now(); // Date.Gnow() を Date.now() に修正
+        timer.startTime = Date.now();
         updateStatus(timer.statusElement, 'タイマー開始', '#28a745');
         setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
         
