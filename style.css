@@ -78,10 +78,10 @@ main {
     line-height: 1;
 }
 
-/* スタートボタンを縦長にする */
+/* スタートボタンの幅をさらに広げる */
 .timer-controls .start-button {
-    padding: 20px 10px; /* 縦幅を大きく */
-    width: 60px; /* ボタンの幅を広げる */
+    padding: 20px 10px; /* 縦幅を維持 */
+    width: 180px; /* ボタンの幅を広げる */
     border: none;
     border-radius: 5px;
     color: white;
