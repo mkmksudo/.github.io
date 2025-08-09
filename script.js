@@ -136,6 +136,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    function startFixedTimer(timerId) {
+        const timer = timers?.[timerId];
+        if (!timer) return;
+
+        resetTimer(timerId);
+
+        timer.startTime = Date.now();
+        updateStatus(timer.statusElement, 'タイマー開始', '#28a745');
+        setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
+
+        const beep110Time = timer.startTime + (110 * 1000);
+        timer.nextBeepTimes = [beep110Time];
+
+        const timeout1 = setTimeout(() => {
+            playBeep();
+            updateStatus(timer.statusElement, '105秒経過！', '#ffc107');
+            setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
+            console.log(`機能${timerId}: 105秒後に音が鳴りました。`);
+            timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
+        }, 105 * 1000);
+
+        const timeout2 = setTimeout(() => {
+            playBeep();
+            updateStatus(timer.statusElement, '110秒経過！完了。', '#28a745');
+            setTimeout(() => { updateStatus(timer.statusElement, ''); }, 1000);
+            console.log(`機能${timerId}: 110秒後に音が鳴りました。`);
+            timer.nextBeepTimes = timer.nextBeepTimes.filter(t => t > Date.now());
+            if (timer.updateInterval) {
+                 clearInterval(timer.updateInterval);
+                 timer.updateInterval = null;
+            }
+            resetTimer(timerId);
+        }, 110 * 1000);
+
+        timer.timeouts.push(timeout1, timeout2);
+
+        timer.updateInterval = setInterval(() => {
+            updateNextBeepTime(timer.nextBeepElement, null, timerId);
+        }, 1000);
+    }
+    
     function startRepeatingTimer(timerId) {
         const timer = timers?.[timerId];
         if (!timer) return;
@@ -210,6 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     }
     
+    // 現在のカウントダウン時間から調整する関数
     function adjustTimer(timerId, amount) {
         const timer = timers?.[timerId];
         if (!timer || (timerId !== 6 && timerId !== 7) || timer.startTime === null) return;
@@ -321,12 +363,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const minusButton = element.querySelector('.adjust-button.minus');
             if (minusButton) {
                 minusButton.textContent = 'ー';
-                minusButton.addEventListener('click', () => adjustTimer(timerId, -0.1));
+                minusButton.addEventListener('click', () => adjustTimer(timerId, -1)); // 調整量を-1秒に修正
             }
             const plusButton = element.querySelector('.adjust-button.plus');
             if (plusButton) {
                 plusButton.textContent = '＋';
-                plusButton.addEventListener('click', () => adjustTimer(timerId, 0.1));
+                plusButton.addEventListener('click', () => adjustTimer(timerId, 1)); // 調整量を+1秒に修正
             }
 
             resetTimer(timerId);
