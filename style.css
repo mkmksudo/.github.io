@@ -86,7 +86,7 @@ main {
 }
 
 .timer-item .next-beep-time {
-    font-size: 1.5em; 
+    font-size: 3em; 
     font-weight: bold;
     line-height: 1;
     color: #6c757d;
