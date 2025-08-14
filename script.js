@@ -11,21 +11,43 @@ document.addEventListener('DOMContentLoaded', () => {
         6: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null, adjustment: 0, adjustmentElement: null, config: { initialDuration: 110, cycleDuration: 15, beepBeforeEnd: 5 } },
         7: { timeouts: [], intervals: [], startTime: null, nextBeepTimes: [], updateInterval: null, statusElement: null, nextBeepElement: null, sectionElement: null, adjustment: 0, adjustmentElement: null, config: { initialDuration: 110, cycleDuration: 12.6, beepBeforeEnd: 5 } }
     };
-    
-    // ===================================
-    // ユーティリティ関数
-    // ===================================
 
-    // MP3ファイルの警告音を再生する関数
-    function playBeep() {
-        try {
-            const audio = new Audio('beep.mp3');
-            audio.play().catch(e => console.error("音声の再生に失敗しました:", e));
-        } catch (e) {
-            console.error("音声の再生に失敗しました:", e);
-        }
+    // ===================================
+    // ユーティリティ関数（Web Audio APIを使用）
+    // ===================================
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let beepBuffer;
+
+    // 警告音ファイルを読み込み、バッファとして保存する関数
+    function loadBeepSound() {
+        return fetch('beep.mp3')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('音声ファイルの読み込みに失敗しました。');
+                }
+                return response.arrayBuffer();
+            })
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then(decodedBuffer => {
+                beepBuffer = decodedBuffer;
+                console.log('警告音の読み込みに成功しました。');
+            })
+            .catch(e => console.error("音声ファイルの読み込みに失敗しました:", e));
     }
 
+    // バッファから警告音を再生する関数
+    function playBeep() {
+        if (!beepBuffer) {
+            console.error('警告音ファイルがまだロードされていません。');
+            return;
+        }
+
+        const source = audioContext.createBufferSource();
+        source.buffer = beepBuffer;
+        source.connect(audioContext.destination);
+        source.start(0);
+    }
+    
     // タイマーのリセット処理をまとめた関数
     function resetTimer(timerId) {
         const timer = timers?.[timerId];
@@ -299,6 +321,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================
     
     function initializeDOM() {
+        // 最初のユーザー操作でAudioContextを有効化
+        document.body.addEventListener('click', () => {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }, { once: true });
+        
+        loadBeepSound();
+
         document.querySelectorAll('.all-reset-button').forEach(button => {
             button.addEventListener('click', resetAllTimers);
         });
